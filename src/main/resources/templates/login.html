@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인</title>
+  <link href="/css/login.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="login-container">
+  <div class="login-header">
+    <h1>Shuttle-roid</h1>
+    <p>업체 정보 관리 - 운행 관제 시스템</p>
+  </div>
+
+  <div class="error-message" id="error-message">
+    아이디 또는 비밀번호가 틀렸습니다.
+  </div>
+
+  <!--서버로 로그인 요청 -->
+  <form method="POST" action="/login">
+    <div class="form-group">
+      <label for="username">기관명</label>
+      <input type="text" id="username" name="username" placeholder="ㅇㅇ대학교" required>
+    </div>
+
+    <div class="form-group">
+      <label for="password">비밀번호</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+
+    <div class="forgot-password">
+      <a href="#">비밀번호 찾기</a>
+    </div>
+
+    <button type="submit" class="login-button">로그인</button>
+  </form>
+
+  <div class="login-footer">
+    계정이 없으신가요? <a href="/join">회원가입</a>
+  </div>
+</div>
+
+<script>
+  // 현재 URL에 error 파라미터가 포함되어 있으면 메시지 표시
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('error') === 'true') {
+    document.getElementById('error-message').style.display = 'block';
+  }
+</script>
+</body>
+</html>

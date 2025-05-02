@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/driver-management.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+    <section class="vehicle-management">
+        <div class="section-header">
+            <h2>차량 관리</h2>
+            <div class="action-buttons">
+                <a href="/vehicle/modify/0" id="addVehicleBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> 차량 추가
+                </a>
+            </div>
+        </div>
+
+        <form id="searchForm" action="/vehicle/search" method="get" class="search-filter">
+            <div class="search-box">
+                <input type="text" id="searchInput" name="searchText" placeholder="차량번호 또는 모델명으로 검색">
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-options">
+                <select id="typeFilter" name="vehicleType">
+                    <option value="">차량 타입 전체</option>
+                    <option value="INNER_CITY">시내</option>
+                    <option value="OUTER_CITY">시외</option>
+                </select>
+                <select id="yearFilter" name="vehicleYear">
+                    <option value="">연식 전체</option>
+                    <option value="2024">2024년</option>
+                    <option value="2023">2023년</option>
+                    <option value="2022">2022년</option>
+                    <option value="2021">2021년 이전</option>
+                </select>
+            </div>
+        </form>
+
+        <div class="vehicle-table-container">
+            <table class="vehicle-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>차량번호</th>
+                    <th>차량타입</th>
+                    <th>모델명</th>
+                    <th>연식</th>
+                    <th>좌석수</th>
+                    <th>입석수</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody id="vehicleTableBody">
+                <!-- 차량 데이터 -->
+                <tr th:each="vehicle : ${Vehicles}" data-id="${vehicle.vehicleId}">
+                    <td th:text="${vehicle.vehicleId}"></td>
+                    <td th:text="${vehicle.vehicleNumber}"></td>
+                    <!-- 차량 타입: 코드값을 한글로 변환 -->
+                    <td th:text="${vehicle.vehicleType.name() == 'INNER_CITY' ? '시내' : '시외'}"></td>
+                    <td th:text="${vehicle.vehicleModel}"></td>
+                    <td th:text="${vehicle.vehicleYear}"></td>
+                    <td th:text="${vehicle.seatCapacity}"></td>
+                    <td th:text="${vehicle.standCapacity}"></td>
+
+                    <!-- 관리 버튼 -->
+                    <td class="action-cell">
+                        <a th:href="@{'/vehicle/modify/' + ${vehicle.vehicleId}}" class="btn-icon">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button class="btn-icon delete-btn" th:data-id="${vehicle.vehicleId}">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="pagination" th:if="${totalPages > 1}">
+                <!-- 이전 페이지 버튼 -->
+                <a class="pagination-btn"
+                   th:classappend="${currentPage == 1} ? ' disabled' : ''"
+                   th:href="@{/vehicle/page/{page}(page=${currentPage - 1})}"
+                   th:if="${currentPage > 1}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                <span class="pagination-btn disabled" th:if="${currentPage == 1}">
+          <i class="fas fa-chevron-left"></i>
+        </span>
+
+                <!-- 페이지 번호 버튼들 -->
+                <a class="pagination-btn"
+                   th:each="i : ${#numbers.sequence(1, totalPages)}"
+                   th:classappend="${i == currentPage} ? ' active' : ''"
+                   th:href="@{/vehicle/page/{page}(page=${i})}">
+                    <span th:text="${i}">1</span>
+                </a>
+
+                <!-- 다음 페이지 버튼 -->
+                <a class="pagination-btn"
+                   th:classappend="${currentPage == totalPages} ? ' disabled' : ''"
+                   th:href="@{/vehicle/page/{page}(page=${currentPage + 1})}"
+                   th:if="${currentPage < totalPages}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                <span class="pagination-btn disabled" th:if="${currentPage == totalPages}">
+          <i class="fas fa-chevron-right"></i>
+        </span>
+            </div>
+        </div>
+    </section>
+
+    <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+
+<footer th:replace="~{ footer.html::footer}"></footer>
+
+<script>
+    // 현재 날짜와 시간 표시 함수
+    function updateDateTime() {
+        const now = new Date();
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        document.getElementById('datetime').textContent = now.toLocaleDateString('ko-KR', options);
+    }
+
+    // 페이지 로드 시 시간 표시 및 1분마다 업데이트
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+</script>
+</body>
+</html>

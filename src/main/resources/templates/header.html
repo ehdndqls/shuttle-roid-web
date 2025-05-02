@@ -1,0 +1,13 @@
+<header th:fragment="header">
+    <div class="logo">
+        <h1>Shuttle-roid</h1>
+        <h4>업체 정보 관리 - 운행 관제 시스템</h4>
+    </div>
+    <div class="header-right">
+        <div class="datetime" id="datetime"></div>
+        <div class="user-info" sec:authorize="isAuthenticated()">
+            <span sec:authentication="principal.username"></span> 님 반갑습니다.  |
+            <a href="/logout" class="logout">로그아웃</a>
+        </div>
+    </div>
+</header>

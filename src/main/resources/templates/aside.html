@@ -1,0 +1,88 @@
+<aside th:fragment="aside">
+  <div class="weather-widget">
+    <div class="widget-header">
+      <h3>날씨 정보</h3>
+      <span class="location">서울특별시</span>
+    </div>
+    <div class="current-weather">
+      <div class="weather-icon">
+        <i class="fas fa-sun"></i>
+      </div>
+      <div class="temperature">
+        <span class="temp-value">24°C</span>
+        <span class="weather-desc">맑음</span>
+      </div>
+    </div>
+    <div class="weather-details">
+      <div class="detail">
+        <span class="detail-label">습도</span>
+        <span class="detail-value">45%</span>
+      </div>
+      <div class="detail">
+        <span class="detail-label">풍속</span>
+        <span class="detail-value">3m/s</span>
+      </div>
+      <div class="detail">
+        <span class="detail-label">강수확률</span>
+        <span class="detail-value">10%</span>
+      </div>
+    </div>
+    <div class="forecast">
+      <div class="forecast-item">
+        <div class="forecast-day">내일</div>
+        <div class="forecast-icon"><i class="fas fa-cloud-sun"></i></div>
+        <div class="forecast-temp">22°C</div>
+      </div>
+      <div class="forecast-item">
+        <div class="forecast-day">모레</div>
+        <div class="forecast-icon"><i class="fas fa-cloud-rain"></i></div>
+        <div class="forecast-temp">19°C</div>
+      </div>
+      <div class="forecast-item">
+        <div class="forecast-day">수요일</div>
+        <div class="forecast-icon"><i class="fas fa-cloud"></i></div>
+        <div class="forecast-temp">20°C</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 공지사항 섹션 추가 -->
+  <div class="notice-board">
+    <div class="widget-header">
+      <h3>공지사항</h3>
+      <a href="#" class="more-link">더보기 <i class="fas fa-chevron-right"></i></a>
+    </div>
+    <ul class="notice-list">
+      <li class="notice-item">
+        <a href="#">
+          <span class="notice-title">2024년 2분기 셔틀 노선 개편 안내</span>
+          <span class="notice-date">2024.04.10</span>
+        </a>
+      </li>
+      <li class="notice-item">
+        <a href="#">
+          <span class="notice-title">시스템 정기 점검 안내 (4/15 02:00-04:00)</span>
+          <span class="notice-date">2024.04.08</span>
+        </a>
+      </li>
+      <li class="notice-item">
+        <a href="#">
+          <span class="notice-title">차량 정비 일정 변경 안내</span>
+          <span class="notice-date">2024.04.05</span>
+        </a>
+      </li>
+      <li class="notice-item">
+        <a href="#">
+          <span class="notice-title">신규 기사 교육 일정 안내</span>
+          <span class="notice-date">2024.04.01</span>
+        </a>
+      </li>
+      <li class="notice-item">
+        <a href="#">
+          <span class="notice-title">셔틀 앱 업데이트 안내 (v2.3.0)</span>
+          <span class="notice-date">2024.03.28</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</aside>

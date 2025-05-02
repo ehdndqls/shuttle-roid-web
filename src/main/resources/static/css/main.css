@@ -1,0 +1,534 @@
+/* 기본 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 헤더 스타일 */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2c3e50;
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.datetime {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    color: #ecf0f1;
+}
+
+.user-info {
+    font-size: 0.9rem;
+}
+
+.logout {
+    color: #e74c3c;
+    text-decoration: none;
+    margin-left: 0.5rem;
+}
+
+.logout:hover {
+    text-decoration: underline;
+}
+
+/* 네비게이션 스타일 */
+nav {
+    background-color: #34495e;
+    padding: 0 2rem;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav li {
+    position: relative;
+}
+
+nav li a {
+    display: flex;
+    align-items: center;
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 1rem 1.5rem;
+    transition: background-color 0.3s;
+}
+
+nav li a i {
+    margin-right: 0.5rem;
+}
+
+nav li a:hover {
+    background-color: #2c3e50;
+}
+
+nav li.active a {
+    background-color: #3498db;
+    font-weight: 600;
+}
+
+/* 메인 콘텐츠 영역 */
+main {
+    display: flex;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.dashboard {
+    flex: 1;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.dashboard-header h2 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.date-selector button {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.date-selector button i {
+    margin-right: 0.5rem;
+}
+
+/* 통계 카드 스타일 */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    border-left: 4px solid #3498db;
+}
+
+.stat-icon {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: #3498db;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.stat-info h3 {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-bottom: 0.3rem;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.stat-unit {
+    font-size: 1rem;
+    font-weight: normal;
+    color: #7f8c8d;
+    margin-left: 0.3rem;
+}
+
+/* 운행 테이블 스타일 */
+.operation-table {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.operation-table h3 {
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.status {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status.on-time {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status.delayed {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* 날씨 위젯 스타일 */
+.weather-widget {
+    width: 300px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.widget-header h3 {
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+.location {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+.current-weather {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.weather-icon {
+    font-size: 3rem;
+    color: #f39c12;
+    margin-right: 1.5rem;
+}
+
+.temperature {
+    display: flex;
+    flex-direction: column;
+}
+
+.temp-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.weather-desc {
+    font-size: 1rem;
+    color: #7f8c8d;
+}
+
+.weather-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.detail-label {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    margin-bottom: 0.3rem;
+}
+
+.detail-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.forecast {
+    display: flex;
+    justify-content: space-between;
+}
+
+.forecast-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.forecast-day {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    margin-bottom: 0.5rem;
+}
+
+.forecast-icon {
+    font-size: 1.5rem;
+    color: #3498db;
+    margin-bottom: 0.5rem;
+}
+
+.forecast-temp {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* 공지사항 스타일 */
+.notice-board {
+    width: 300px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+}
+
+.more-link {
+    font-size: 0.8rem;
+    color: #3498db;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.more-link i {
+    font-size: 0.7rem;
+    margin-left: 0.3rem;
+}
+
+.notice-list {
+    list-style: none;
+    margin-top: 1rem;
+}
+
+.notice-item {
+    border-bottom: 1px solid #eee;
+}
+
+.notice-item:last-child {
+    border-bottom: none;
+}
+
+.notice-item a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    text-decoration: none;
+    color: #333;
+}
+
+.notice-item a:hover {
+    background-color: #f8f9fa;
+}
+
+.notice-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 1rem;
+}
+
+.notice-date {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+}
+
+/* 푸터 스타일 */
+footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    padding: 2rem 0 0 0;
+    margin-top: 2rem;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.footer-logo {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 2rem;
+}
+
+.footer-logo h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-logo p {
+    color: #bdc3c7;
+}
+
+.footer-info {
+    flex: 2;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.info-group {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 2rem;
+    padding-right: 1rem;
+}
+
+.info-group h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #3498db;
+}
+
+.info-group p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #bdc3c7;
+}
+
+.info-group i {
+    width: 20px;
+    margin-right: 0.5rem;
+    color: #3498db;
+}
+
+.footer-bottom {
+    background-color: #1a252f;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.footer-bottom p {
+    color: #95a5a6;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    main {
+        flex-direction: column;
+    }
+
+    .weather-widget,
+    .notice-board {
+        width: 100%;
+    }
+
+    .forecast {
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-right {
+        margin-top: 1rem;
+        align-items: flex-start;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+

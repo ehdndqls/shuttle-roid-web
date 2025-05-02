@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/driver-management.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+
+    <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+
+<footer th:replace="~{ footer.html::footer}"></footer>
+
+<script>
+    // 현재 날짜와 시간 표시 함수
+    function updateDateTime() {
+        const now = new Date();
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        document.getElementById('datetime').textContent = now.toLocaleDateString('ko-KR', options);
+    }
+
+    // 페이지 로드 시 시간 표시 및 1분마다 업데이트
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+</script>
+</body>
+</html>

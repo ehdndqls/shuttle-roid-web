@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/driver-management.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+
+  <section class="driver-management">
+    <div class="section-header">
+      <h2>운전자 관리</h2>
+      <div class="action-buttons">
+        <a href="/driver/modify/0" id="addDriverBtn" class="btn btn-primary">
+          <i class="fas fa-plus"></i> 운전자 추가
+        </a>
+      </div>
+    </div>
+
+    <form id="searchForm" action="/driver/search" method="get" class="search-filter">
+      <div class="search-box">
+        <input type="text" id="searchInput" name="searchText" placeholder="이름 또는 ID로 검색">
+        <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+      <div class="filter-options">
+        <select id="typeFilter" name="type">
+          <option value="">운전 타입 전체</option>
+          <option value="일반">일반</option>
+          <option value="특수">특수</option>
+          <option value="대형">대형</option>
+        </select>
+        <select id="yearFilter" name="joinYear">
+          <option value="">입사년도 전체</option>
+          <option value="2024">2024년</option>
+          <option value="2023">2023년</option>
+          <option value="2022">2022년</option>
+          <option value="2021">2021년 이전</option>
+        </select>
+      </div>
+    </form>
+
+    <div class="driver-table-container">
+      <table class="driver-table">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>이름</th>
+          <th>입사년도</th>
+          <th>운전 타입</th>
+          <th>상태</th>
+          <th>관리</th>
+        </tr>
+        </thead>
+        <tbody id="driverTableBody">
+        <!-- 운전자 데이터 -->
+        <tr th:each="driver : ${Drivers}" data-id="${driver.driverId}">
+          <td th:text="${driver.driverId}"></td>
+          <td th:text="${driver.driverName}"></td>
+          <td th:text="${driver.joinYear}"></td>
+          <!-- 운전 타입: 코드값을 한글로 변환 -->
+          <td th:text="${driver.type.name() == 'Standard' ? '일반'
+               : (driver.type.name() == 'Special' ? '특수'
+               : (driver.type.name() == 'Large' ? '대형' : '기타'))}"></td>
+          <!-- 상태: true → 활성, false → 휴직 -->
+          <td>
+              <span th:class="'status ' + (${driver.active} ? 'active' : 'inactive')"
+              th:text="${driver.active} ? '활성' : '휴직'">활성</span>
+          </td>
+
+          <!-- 관리 버튼 -->
+          <td class="action-cell">
+            <a th:href="@{'/driver/modify/' + ${driver.driverId}}" class="btn-icon">
+              <i class="fas fa-edit"></i>
+            </a>
+            <button class="btn-icon delete-btn" th:data-id="${driver.driverId}">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+
+      </table>
+      <div class="pagination" th:if="${totalPages > 1}">
+        <!-- 이전 페이지 버튼 -->
+        <a class="pagination-btn"
+           th:classappend="${currentPage == 1} ? ' disabled' : ''"
+           th:href="@{/driver/page/{page}(page=${currentPage - 1})}"
+           th:if="${currentPage > 1}">
+          <i class="fas fa-chevron-left"></i>
+        </a>
+        <span class="pagination-btn disabled" th:if="${currentPage == 1}">
+      <i class="fas fa-chevron-left"></i>
+    </span>
+
+        <!-- 페이지 번호 버튼들 -->
+        <a class="pagination-btn"
+           th:each="i : ${#numbers.sequence(1, totalPages)}"
+           th:classappend="${i == currentPage} ? ' active' : ''"
+           th:href="@{/driver/page/{page}(page=${i})}">
+          <span th:text="${i}">1</span>
+        </a>
+
+        <!-- 다음 페이지 버튼 -->
+        <a class="pagination-btn"
+           th:classappend="${currentPage == totalPages} ? ' disabled' : ''"
+           th:href="@{/driver/page/{page}(page=${currentPage + 1})}"
+           th:if="${currentPage < totalPages}">
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <span class="pagination-btn disabled" th:if="${currentPage == totalPages}">
+      <i class="fas fa-chevron-right"></i>
+    </span>
+      </div>
+    </div>
+  </section>
+
+  <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+
+<footer th:replace="~{ footer.html::footer}"></footer>
+
+<script>
+
+  // 삭제 버튼 클릭 시 DELETE 요청 전송
+  document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function () {
+      const driverId = this.getAttribute('data-id');
+      console.log(driverId);
+      if (confirm('정말 삭제하시겠습니까?')) {
+        fetch(`/driver/delete/${driverId}`, {
+          method: 'DELETE'
+        })
+                .then(response => {
+                  if (!response.ok) throw new Error('삭제 실패');
+                  alert('삭제되었습니다.');
+                  location.reload();
+                })
+                .catch(error => {
+                  console.error(error);
+                  alert('삭제 중 오류가 발생했습니다.');
+                });
+      }
+    });
+  });
+
+  // 현재 날짜와 시간 표시 함수
+  function updateDateTime() {
+    const now = new Date();
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    document.getElementById('datetime').textContent = now.toLocaleDateString('ko-KR', options);
+  }
+
+  // 페이지 로드 시 시간 표시 및 1분마다 업데이트
+  updateDateTime();
+  setInterval(updateDateTime, 60000);
+</script>
+</body>
+</html>

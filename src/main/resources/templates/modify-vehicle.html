@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>차량 관리 - Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/vehicle-management.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+    <section class="add-vehicle-section">
+        <div class="section-header">
+            <h2 th:text="${vehicle != null} ? '차량 정보 수정' : '차량 등록'">차량 등록</h2>
+        </div>
+        <div class="form-container">
+            <form id="addVehicleForm" class="vehicle-form" th:action="@{/vehicle/modify}" method="post" th:object="${vehicleForm}">
+                <div class="form-grid">
+                    <input type="hidden" id="vehicleId" name="vehicleId" th:value="${vehicle != null} ? ${vehicle.vehicleId} : ''" />
+
+                    <div class="form-group">
+                        <label for="vehicleNumber">차량번호</label>
+                        <input type="text" id="vehicleNumber" name="vehicleNumber" th:value="${vehicle != null} ? ${vehicle.vehicleNumber} : ''" required placeholder="예: 서울12가3456" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vehicleModel">모델명</label>
+                        <input type="text" id="vehicleModel" name="vehicleModel" th:value="${vehicle != null} ? ${vehicle.vehicleModel} : ''" required placeholder="예: 현대 유니버스" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vehicleYear">연식</label>
+                        <input type="number" id="vehicleYear" name="vehicleYear" min="2000" max="2030" th:value="${vehicle != null} ? ${vehicle.vehicleYear} : ''" required placeholder="예: 2022" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vehicleType">차량 타입</label>
+                        <select id="vehicleType" name="vehicleType">
+                            <option value="INNER_CITY" th:selected="${vehicle != null} ? ${vehicle.vehicleType.name()} == 'INNER_CITY' : false">시내</option>
+                            <option value="OUTER_CITY" th:selected="${vehicle != null} ? ${vehicle.vehicleType.name()} == 'OUTER_CITY' : false">시외</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="seatCapacity">좌석수</label>
+                        <input type="number" id="seatCapacity" name="seatCapacity" min="0" max="100" th:value="${vehicle != null} ? ${vehicle.seatCapacity} : ''" required placeholder="예: 45" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="standCapacity">입석수</label>
+                        <input type="number" id="standCapacity" name="standCapacity" min="0" max="100" th:value="${vehicle != null} ? ${vehicle.standCapacity} : ''" required placeholder="예: 10" />
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="location.href='/vehicle'">취소</button>
+                    <button type="submit" class="btn btn-primary" th:text="${vehicle != null} ? '수정하기' : '등록하기'">등록하기</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+<footer th:replace="~{ footer.html::footer }"></footer>
+
+</body>
+</html>

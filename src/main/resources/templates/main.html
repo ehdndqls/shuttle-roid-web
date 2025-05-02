@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+    <section class="dashboard">
+        <div class="dashboard-header">
+            <h2>금일 운행 현황</h2>
+            <div class="date-selector">
+                <button><i class="fas fa-calendar-alt"></i> 오늘</button>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-bus"></i></div>
+                <div class="stat-info">
+                    <h3>운행 대수</h3>
+                    <p class="stat-value">24<span class="stat-unit">대</span></p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-route"></i></div>
+                <div class="stat-info">
+                    <h3>운행 노선</h3>
+                    <p class="stat-value">12<span class="stat-unit">개</span></p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-user-friends"></i></div>
+                <div class="stat-info">
+                    <h3>탑승 인원</h3>
+                    <p class="stat-value">342<span class="stat-unit">명</span></p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="stat-info">
+                    <h3>지연 발생</h3>
+                    <p class="stat-value">2<span class="stat-unit">건</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="operation-table">
+            <h3>실시간 운행 현황</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>노선번호</th>
+                    <th>차량번호</th>
+                    <th>기사명</th>
+                    <th>출발지</th>
+                    <th>도착지</th>
+                    <th>출발시간</th>
+                    <th>도착예정</th>
+                    <th>상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>A-01</td>
+                    <td>서울 12가 3456</td>
+                    <td>김기사</td>
+                    <td>강남역</td>
+                    <td>판교역</td>
+                    <td>08:30</td>
+                    <td>09:15</td>
+                    <td class="status on-time">정상</td>
+                </tr>
+                <tr>
+                    <td>B-02</td>
+                    <td>경기 45나 6789</td>
+                    <td>이기사</td>
+                    <td>광화문</td>
+                    <td>일산</td>
+                    <td>08:45</td>
+                    <td>09:45</td>
+                    <td class="status delayed">지연</td>
+                </tr>
+                <tr>
+                    <td>C-03</td>
+                    <td>서울 78다 1234</td>
+                    <td>박기사</td>
+                    <td>잠실역</td>
+                    <td>구로역</td>
+                    <td>09:00</td>
+                    <td>09:50</td>
+                    <td class="status on-time">정상</td>
+                </tr>
+                <tr>
+                    <td>D-04</td>
+                    <td>경기 56라 7890</td>
+                    <td>최기사</td>
+                    <td>수원역</td>
+                    <td>강남역</td>
+                    <td>09:15</td>
+                    <td>10:15</td>
+                    <td class="status on-time">정상</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+
+<footer th:replace="~{ footer.html::footer}"></footer>
+
+<script>
+    // 현재 날짜와 시간 표시 함수
+    function updateDateTime() {
+        const now = new Date();
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        document.getElementById('datetime').textContent = now.toLocaleDateString('ko-KR', options);
+    }
+
+    // 페이지 로드 시 시간 표시 및 1분마다 업데이트
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+</script>
+</body>
+</html>
