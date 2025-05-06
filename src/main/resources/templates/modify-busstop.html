@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정류소 관리 - Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/busstop-management.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+  <section class="add-busstop-section">
+    <div class="section-header">
+      <h2 th:text="${busstop != null} ? '정류소 정보 수정' : '정류소 등록'">정류소 등록</h2>
+    </div>
+
+    <div class="map-container">
+      <div id="kakaoMap">
+        <!-- 카카오맵 API가 여기에 로드됩니다 -->
+        <div class="map-placeholder" id="map" style="width:500px;height:400px;"></div>
+      </div>
+      <div class="map-info">
+        <p><i class="fas fa-info-circle"></i> 지도에 마우스를 클릭하면 위도/경도가 자동으로 입력됩니다.</p>
+      </div>
+    </div>
+
+    <div class="form-container">
+      <form id="addBusstopForm" class="busstop-form" th:action="@{/busstop/modify}" method="post" th:object="${busstopForm}">
+        <div class="form-grid">
+          <input type="hidden" id="stopId" name="stopId" th:value="${busstop != null} ? ${busstop.stopId} : ''" />
+
+          <!-- 정류소 이름 -->
+          <div class="form-group">
+            <label for="stopName">정류소 이름</label>
+            <input type="text" id="stopName" name="stopName"
+                   th:value="${busstop != null} ? ${busstop.stopName} : ''"
+                   required placeholder="예: 순천향대 정문" />
+          </div>
+
+          <!-- 위도 (읽기 전용) -->
+          <div class="form-group">
+            <label for="latitude">위도</label>
+            <input type="number" id="latitude" name="latitude" step="0.0001"
+                   th:value="${busstop != null} ? ${busstop.latitude} : ''"
+                   readonly />
+          </div>
+
+          <!-- 경도 (읽기 전용) -->
+          <div class="form-group">
+            <label for="longitude">경도</label>
+            <input type="number" id="longitude" name="longitude" step="0.0001"
+                   th:value="${busstop != null} ? ${busstop.longitude} : ''"
+                   readonly />
+          </div>
+
+          <!-- 민감도 -->
+          <div class="form-group">
+            <label for="sensitivity">민감도 (m)</label>
+            <input type="number" id="sensitivity" name="sensitivity" min="0" max="100"
+                   th:value="${busstop != null} ? ${busstop.sensitivity} : ''"
+                   required placeholder="예: 30" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="location.href='/busstop'">취소</button>
+          <button type="submit" class="btn btn-primary"
+                  th:text="${busstop != null} ? '수정하기' : '등록하기'">등록하기</button>
+        </div>
+      </form>
+    </div>
+
+  </section>
+
+  <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+
+<footer th:replace="~{ footer.html::footer }"></footer>
+
+
+
+<!-- 카카오맵 API 스크립트 -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=내키^^"></script>
+<script>
+  var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+          mapOption = {
+            center: new kakao.maps.LatLng(36.772914, 126.933644), // 지도의 중심좌표
+            level: 3 // 지도의 확대 레벨
+          };
+
+  var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+  // 마커 생성
+  var marker = new kakao.maps.Marker({
+    position: map.getCenter()
+  });
+  marker.setMap(map);
+
+  // input 요소
+  var latInput = document.getElementById('latitude');
+  var lngInput = document.getElementById('longitude');
+
+  // 클릭 시 마커 이동 + input 값 업데이트
+  kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+    var latlng = mouseEvent.latLng;
+    marker.setPosition(latlng);
+    latInput.value = latlng.getLat().toFixed(6);
+    lngInput.value = latlng.getLng().toFixed(6);
+  });
+
+</script>
+<script>
+
+  // 정류소 삭제 기능
+  // 삭제 버튼 클릭 시 DELETE 요청 전송
+  document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function () {
+      const stopId = this.getAttribute('data-id');
+      console.log(stopId);
+      if (confirm('정말 삭제하시겠습니까?')) {
+        fetch(`/busstop/delete/${stopId}`, {
+          method: 'DELETE'
+        })
+                .then(response => {
+                  if (!response.ok) throw new Error('삭제 실패');
+                  alert('삭제되었습니다.');
+                  location.reload();
+                })
+                .catch(error => {
+                  console.error(error);
+                  alert('삭제 중 오류가 발생했습니다.');
+                });
+      }
+    });
+  });
+
+  // 현재 날짜와 시간 표시 함수
+  function updateDateTime() {
+    const now = new Date();
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    document.getElementById('datetime').textContent = now.toLocaleDateString('ko-KR', options);
+  }
+
+  // 페이지 로드 시 시간 표시 및 1분마다 업데이트
+  updateDateTime();
+  setInterval(updateDateTime, 60000);
+
+</script>
+
+</body>
+</html>
