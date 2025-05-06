@@ -26,6 +26,11 @@ public class BasicController {
         return "index.html";
     }
 
+    @GetMapping("/test")
+    String test(){
+        return "busstop.html";
+    }
+
     @GetMapping("/date")
     @ResponseBody
     String date(){

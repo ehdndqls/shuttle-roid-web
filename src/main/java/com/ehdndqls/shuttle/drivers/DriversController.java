@@ -1,6 +1,7 @@
 package com.ehdndqls.shuttle.drivers;
 
 import com.ehdndqls.shuttle.dto.DriverForm;
+import com.ehdndqls.shuttle.organizations.OrganizationsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +19,7 @@ import java.util.List;
 public class DriversController {
     private final DriversRepository driversRepository;
     private final DriversService driversService;
-
+    private final OrganizationsService organizationsService;
 
     @GetMapping("/driver")
     public String redirectDriver(){
@@ -28,7 +29,7 @@ public class DriversController {
     @GetMapping("/driver/page/{page}")
     public String driver(Authentication auth, Model model, @PathVariable Integer page) {
 
-        Long id = driversService.getOrganizationId(auth);
+        Long id = organizationsService.getOrganizationId(auth);
 
         if (page == null || page < 1) {
             page = 1;
@@ -50,7 +51,7 @@ public class DriversController {
 
     @PostMapping("/driver/modify")
     public String modifyDriver(@ModelAttribute DriverForm driverForm, Authentication auth) {
-        Long id = driversService.getOrganizationId(auth);
+        Long id = organizationsService.getOrganizationId(auth);
         driversService.modify(driverForm, id);
         System.out.println(driverForm);
         return "redirect:/driver/page/1";
@@ -61,7 +62,7 @@ public class DriversController {
                          @RequestParam(required = false) Drivers.DriverType type,
                          @RequestParam(required = false) Integer joinYear,
                          Model model, Authentication auth) {
-        Long id = driversService.getOrganizationId(auth);
+        Long id = organizationsService.getOrganizationId(auth);
         List<Drivers> driverList = driversService.search(searchText, type, joinYear ,id);
         model.addAttribute("Drivers", driverList);
         model.addAttribute("currentPage", 1); // 현재 페이지

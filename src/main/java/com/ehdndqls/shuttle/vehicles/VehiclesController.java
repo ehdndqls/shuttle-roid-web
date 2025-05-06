@@ -1,6 +1,7 @@
 package com.ehdndqls.shuttle.vehicles;
 
 import com.ehdndqls.shuttle.dto.VehicleForm;
+import com.ehdndqls.shuttle.organizations.OrganizationsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ public class VehiclesController {
 
     private final VehiclesRepository vehiclesRepository;
     private final VehiclesService vehiclesService;
+    private final OrganizationsService organizationsService;
 
 
     @GetMapping("/vehicle")
@@ -27,7 +29,7 @@ public class VehiclesController {
 
     @GetMapping("/vehicle/page/{page}")
     public String vehicle(Authentication auth, Model model, @PathVariable Integer page) {
-        Long id = vehiclesService.getOrganizationId(auth);
+        Long id = organizationsService.getOrganizationId(auth);
 
         if (page == null || page < 1) {
             page = 1;
@@ -49,7 +51,7 @@ public class VehiclesController {
 
     @PostMapping("/vehicle/modify")
     public String modifyDriver(@ModelAttribute VehicleForm vehicleForm, Authentication auth) {
-        Long id = vehiclesService.getOrganizationId(auth);
+        Long id = organizationsService.getOrganizationId(auth);
         vehiclesService.modify(vehicleForm, id);
         System.out.println(vehicleForm);
         return "redirect:/vehicle/page/1";
@@ -60,7 +62,7 @@ public class VehiclesController {
                          @RequestParam(required = false) Vehicles.VehicleType vehicleType,
                          @RequestParam(required = false) Integer vehicleYear,
                          Model model, Authentication auth) {
-        Long id = vehiclesService.getOrganizationId(auth);
+        Long id = organizationsService.getOrganizationId(auth);
         List<Vehicles> vehicleList = vehiclesService.search(searchText, vehicleType, vehicleYear ,id);
         model.addAttribute("Vehicles", vehicleList);
         model.addAttribute("currentPage", 1); // 현재 페이지

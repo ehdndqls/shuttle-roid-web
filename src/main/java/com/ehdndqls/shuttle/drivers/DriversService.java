@@ -45,13 +45,4 @@ public class DriversService {
         }
         return driversRepository.searchDrivers(searchText, type, joinYear, organizationId);
     }
-
-    public Long getOrganizationId(Authentication authentication) {
-        if (authentication == null || !(authentication.getPrincipal() instanceof OrganizationUserDetails)) {
-            throw new IllegalStateException("유효하지 않은 인증 정보입니다.");
-        }
-
-        OrganizationUserDetails userDetails = (OrganizationUserDetails) authentication.getPrincipal();
-        return userDetails.getId();
-    }
 }

@@ -21,7 +21,7 @@ public class DriverForm {
     }
 
     // 모든 필드를 사용하는 생성자
-    public DriverForm(Long id, String name, Integer joinYear, Drivers.DriverType type, Boolean active) {
+    public DriverForm(Long id, String driverName, Integer joinYear, Drivers.DriverType type, Boolean active) {
         this.id = id;
         this.driverName = driverName;
         this.joinYear = joinYear;

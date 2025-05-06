@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정류소 관리 - Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/busstop-management.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+    <section class="busstop-management">
+        <div class="section-header">
+            <h2>정류소 관리</h2>
+            <div class="action-buttons">
+                <a href="/busstop/modify/0" id="addBusstopBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> 정류소 추가
+                </a>
+            </div>
+        </div>
+
+        <form id="searchForm" action="/busstop/search" method="get" class="search-filter">
+            <div class="search-box">
+                <input type="text" id="searchInput" name="searchText" placeholder="정류소 이름으로 검색">
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+
+        <div class="busstop-container">
+            <div class="busstop-table-container">
+                <table class="busstop-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>정류소 이름</th>
+                        <th>위도</th>
+                        <th>경도</th>
+                        <th>민감도(m)</th>
+                        <th>관리</th>
+                    </tr>
+                    </thead>
+                    <tbody id="busstopTableBody">
+                    <!-- 정류소 데이터 -->
+                    <tr th:each="busstop : ${BusStops}" data-id="${busstop.stopId}">
+                        <td th:text="${busstop.stopId}"></td>
+                        <td th:text="${busstop.stopName}"></td>
+                        <td th:text="${busstop.latitude}"></td>
+                        <td th:text="${busstop.longitude}"></td>
+                        <td th:text="${busstop.sensitivity}"></td>
+
+                        <!-- 관리 버튼 -->
+                        <td class="action-cell">
+                            <a th:href="@{'/busstop/modify/' + ${busstop.stopId}}" class="btn-icon">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button class="btn-icon delete-btn" th:data-id="${busstop.stopId}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination" th:if="${totalPages > 1}">
+                    <!-- 이전 페이지 버튼 -->
+                    <a class="pagination-btn"
+                       th:classappend="${currentPage == 1} ? ' disabled' : ''"
+                       th:href="@{/vehicle/page/{page}(page=${currentPage - 1})}"
+                       th:if="${currentPage > 1}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <span class="pagination-btn disabled" th:if="${currentPage == 1}">
+                    <i class="fas fa-chevron-left"></i>
+                </span>
+
+                    <!-- 페이지 번호 버튼들 -->
+                    <a class="pagination-btn"
+                       th:each="i : ${#numbers.sequence(1, totalPages)}"
+                       th:classappend="${i == currentPage} ? ' active' : ''"
+                       th:href="@{/vehicle/page/{page}(page=${i})}">
+                        <span th:text="${i}">1</span>
+                    </a>
+
+                    <!-- 다음 페이지 버튼 -->
+                    <a class="pagination-btn"
+                       th:classappend="${currentPage == totalPages} ? ' disabled' : ''"
+                       th:href="@{/vehicle/page/{page}(page=${currentPage + 1})}"
+                       th:if="${currentPage < totalPages}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <span class="pagination-btn disabled" th:if="${currentPage == totalPages}">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <div id="kakaoMap">
+                    <!-- 카카오맵 API가 여기에 로드됩니다 -->
+                    <div class="map-placeholder">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <p>카카오맵 API가 로드됩니다</p>
+                        <p class="map-note">실제 구현 시 카카오맵 API 키를 발급받아 사용하세요</p>
+                    </div>
+                </div>
+                <div class="map-info">
+                    <p><i class="fas fa-info-circle"></i> 지도에서 위치를 클릭하면 위도/경도가 자동으로 입력됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+<footer th:replace="~{ footer.html::footer }"></footer>
+
+<!-- 카카오맵 API 스크립트 -->
+<script>
+    // 실제 구현 시 카카오맵 API 키를 발급받아 사용하세요
+    document.addEventListener('DOMContentLoaded', function() {
+        // 여기에 카카오맵 API 초기화 코드가 들어갑니다
+        console.log('카카오맵 API 초기화 준비 완료');
+    });
+
+    // 정류소 삭제 기능
+    // 삭제 버튼 클릭 시 DELETE 요청 전송
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const stopId = this.getAttribute('data-id');
+            console.log(stopId);
+            if (confirm('정말 삭제하시겠습니까?')) {
+                fetch(`/busstop/delete/${stopId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('삭제 실패');
+                        alert('삭제되었습니다.');
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('삭제 중 오류가 발생했습니다.');
+                    });
+            }
+        });
+    });
+
+    // 현재 날짜와 시간 표시 함수
+    function updateDateTime() {
+        const now = new Date();
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        document.getElementById('datetime').textContent = now.toLocaleDateString('ko-KR', options);
+    }
+
+    // 페이지 로드 시 시간 표시 및 1분마다 업데이트
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+
+</script>
+
+</body>
+</html>
