@@ -28,7 +28,7 @@ public class BasicController {
 
     @GetMapping("/test")
     String test(){
-        return "busstop.html";
+        return "testmap.html";
     }
 
     @GetMapping("/date")
