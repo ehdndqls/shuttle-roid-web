@@ -28,7 +28,7 @@ public class BasicController {
 
     @GetMapping("/test")
     String test(){
-        return "index.html";
+        return "route.html";
     }
 
     @GetMapping("/date")

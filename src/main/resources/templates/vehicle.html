@@ -125,6 +125,28 @@
 <footer th:replace="~{ footer.html::footer}"></footer>
 
 <script>
+    // 삭제 버튼 클릭 시 DELETE 요청 전송
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const vehicleId = this.getAttribute('data-id');
+            console.log(vehicleId);
+            if (confirm('정말 삭제하시겠습니까?')) {
+                fetch(`/vehicle/delete/${vehicleId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('삭제 실패');
+                        alert('삭제되었습니다.');
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('삭제 중 오류가 발생했습니다.');
+                    });
+            }
+        });
+    });
+
     // 현재 날짜와 시간 표시 함수
     function updateDateTime() {
         const now = new Date();

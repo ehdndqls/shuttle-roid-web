@@ -1,0 +1,483 @@
+/* 노선 관리 페이지 스타일 */
+
+/* 섹션 헤더 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* 버튼 스타일 */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+}
+
+.btn i {
+    margin-right: 0.5rem;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+/* 노선 컨테이너 레이아웃 */
+.route-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* 검색 및 필터 */
+.search-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.search-box {
+    display: flex;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 0.9rem;
+}
+
+.search-box .search-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0 1rem;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.filter-options {
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-options select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 0.9rem;
+}
+
+/* 노선 목록 섹션 */
+.route-list-section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.route-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+/* 노선 카드 스타일 */
+.route-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.route-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.route-card.selected {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+}
+
+.route-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.route-card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.route-card-body {
+    padding: 1rem;
+}
+
+.route-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.route-points {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #34495e;
+}
+
+.route-point i {
+    margin-right: 0.5rem;
+    color: #3498db;
+}
+
+.route-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+.route-stats span {
+    display: flex;
+    align-items: center;
+}
+
+.route-stats i {
+    margin-right: 0.5rem;
+}
+
+/* 노선 타입 배지 */
+.route-type {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.route-type.circular {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.route-type.one-way {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+.route-type.round-trip {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+/* 정류소 목록 섹션 */
+.route-stops-section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+}
+
+.route-stops-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.route-stops-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #2c3e50;
+    flex: 1;
+}
+
+.route-actions {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.route-actions .btn {
+    height: 36px;
+    min-width: 80px;
+    justify-content: center;
+}
+
+.route-actions .btn i {
+    margin-right: 0.5rem;
+}
+
+/* 노선 정보 카드 */
+.route-info-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.route-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.info-label {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.route-type-badge {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.route-type-badge.circular {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.route-type-badge.one-way {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+.route-type-badge.round-trip {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+/* 정류소 목록 시각화 */
+.route-stops-visual {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.route-line {
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: #3498db;
+}
+
+.route-line.circular-line::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -8px;
+    width: 20px;
+    height: 20px;
+    border: 4px solid #3498db;
+    border-top: transparent;
+    border-right: transparent;
+    border-radius: 50%;
+    transform: rotate(45deg);
+}
+
+.route-stops {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.route-stop {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    position: relative;
+}
+
+.stop-marker {
+    width: 2rem;
+    height: 2rem;
+    background-color: #3498db;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.stop-marker.start-stop {
+    background-color: #27ae60;
+}
+
+.stop-marker.end-stop {
+    background-color: #e74c3c;
+}
+
+.stop-info {
+    flex: 1;
+    padding-top: 0.3rem;
+}
+
+.stop-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.3rem;
+}
+
+.stop-details {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+/* 빈 상태 스타일 */
+.no-route-selected {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #95a5a6;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    font-size: 1rem;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 992px) {
+    .route-container {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .route-list-section {
+        flex: 1;
+        margin-bottom: 0;
+    }
+
+    .route-stops-section {
+        flex: 1.5;
+    }
+}
+
+@media (max-width: 991px) {
+    .route-container {
+        flex-direction: column;
+    }
+
+    .route-list-section,
+    .route-stops-section {
+        width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .route-actions {
+        flex-direction: column;
+    }
+
+    .search-filter {
+        flex-direction: column;
+    }
+
+    .filter-options {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .filter-options select {
+        width: 100%;
+    }
+
+    .route-info-card {
+        grid-template-columns: 1fr;
+    }
+
+    .route-points {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
