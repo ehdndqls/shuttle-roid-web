@@ -111,60 +111,22 @@
 
 <footer th:replace="~{ footer.html::footer }"></footer>
 
-<script>
-    // 샘플 데이터 - 실제 구현 시 서버에서 가져옵니다
-    const routes = [
-        {
-            routeId: 1,
-            routeName: "순천향대 순환노선",
-            routeType: "CIRCULATION",
-            HolidayService: false,
-            TypeRestriction: "일반",
-            stops: [1, 2, 3, 4, 5, 6, 7, 1], // 시작점과 종료점이 같음 (순환)
-            estimatedTime: "25분"
-        },
-        {
-            routeId: 2,
-            routeName: "천안역 - 순천향대",
-            routeType: "ROUND_TRIP",
-            HolidayService: true,
-            TypeRestriction: "대형",
-            stops: [8, 9, 10, 1, 10, 9, 8], // 왕복
-            estimatedTime: "40분"
-        },
-        {
-            routeId: 3,
-            routeName: "터미널 - 순천향대",
-            routeType: "ONE_WAY",
-            HolidayService: false,
-            TypeRestriction: "일반",
-            stops: [11, 12, 13, 1], // 편도
-            estimatedTime: "20분"
-        }
-    ];
-
-    // 정류소 샘플 데이터
-    const stops = {
-        1: { name: "순천향대 정문", details: "정문 앞 버스 정류장" },
-        2: { name: "향설생활관", details: "기숙사 앞" },
-        3: { name: "공학관", details: "공대 건물 앞" },
-        4: { name: "의료과학관", details: "의대 건물 앞" },
-        5: { name: "학생회관", details: "식당 앞" },
-        6: { name: "인문과학관", details: "인문대 건물 앞" },
-        7: { name: "자연과학관", details: "자연대 건물 앞" },
-        8: { name: "천안역", details: "천안역 동부 광장" },
-        9: { name: "두정역", details: "두정역 1번 출구" },
-        10: { name: "천안시청", details: "시청 앞 버스 정류장" },
-        11: { name: "천안 터미널", details: "터미널 앞 버스 정류장" },
-        12: { name: "천안 백화점", details: "백화점 앞" },
-        13: { name: "천안 종합운동장", details: "운동장 정문 앞" }
-    };
+<script th:inline="javascript">
+    // 서버에서 받은 데이터
+    const routes = /*[[${routes}]]*/ [];
 
     // 노선 타입 한글 변환
     const routeTypeMap = {
         "CIRCULATION": "순환",
         "ONE_WAY": "편도",
         "ROUND_TRIP": "왕복"
+    };
+
+    // 차량 유형 한글 변환
+    const typeRestrictionMap = {
+        "Standard": "일반",
+        "Large": "대형",
+        "Special": "특수"
     };
 
     // 노선 타입별 클래스
@@ -181,8 +143,8 @@
 
         routes.forEach(route => {
             // 출발지와 도착지 결정
-            let startStop = stops[route.stops[0]].name;
-            let endStop = stops[route.stops[route.stops.length - 1]].name;
+            let startStop = route.stops.length > 0 ? route.stops[0].name : '정류소 없음';
+            let endStop = route.stops.length > 0 ? route.stops[route.stops.length - 1].name : '정류소 없음';
 
             const routeCard = document.createElement('div');
             routeCard.className = 'route-card';
@@ -201,7 +163,7 @@
             <div class="route-stats">
               <span><i class="fas fa-clock"></i> ${route.estimatedTime}</span>
               <span><i class="fas fa-map-marker-alt"></i> 정류장 ${route.stops.length}개</span>
-              <span><i class="fas fa-bus"></i> ${route.TypeRestriction}</span>
+              <span><i class="fas fa-bus"></i> ${typeRestrictionMap[route.typeRestriction] || route.typeRestriction}</span>
             </div>
           </div>
         </div>
@@ -238,8 +200,8 @@
 
         // 노선 정보 업데이트
         document.getElementById('routeTypeValue').innerHTML = `<span class="route-type-badge ${routeTypeClass[route.routeType]}">${routeTypeMap[route.routeType]}</span>`;
-        document.getElementById('holidayServiceValue').textContent = route.HolidayService ? '운행' : '미운행';
-        document.getElementById('typeRestrictionValue').textContent = route.TypeRestriction;
+        document.getElementById('holidayServiceValue').textContent = route.holidayService ? '운행' : '미운행';
+        document.getElementById('typeRestrictionValue').textContent = typeRestrictionMap[route.typeRestriction] || route.typeRestriction;
         document.getElementById('stopsCountValue').textContent = `${route.stops.length}개`;
         document.getElementById('estimatedTimeValue').textContent = route.estimatedTime;
 
@@ -259,8 +221,7 @@
         const routeStops = document.getElementById('routeStops');
         routeStops.innerHTML = '';
 
-        route.stops.forEach((stopId, index) => {
-            const stop = stops[stopId];
+        route.stops.forEach((stop, index) => {
             const isFirst = index === 0;
             const isLast = index === route.stops.length - 1;
 
@@ -288,10 +249,21 @@
         const routeId = this.getAttribute('data-id');
         if (confirm('정말 이 노선을 삭제하시겠습니까?')) {
             // 실제 구현 시 서버로 삭제 요청을 보냄
-            console.log(`노선 ID ${routeId} 삭제 요청`);
-            alert('노선이 삭제되었습니다.');
-            // 삭제 후 목록 새로고침
-            location.reload();
+            fetch(`/api/routes/${routeId}`, {
+                method: 'DELETE',
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('노선이 삭제되었습니다.');
+                        location.reload();
+                    } else {
+                        alert('노선 삭제에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('오류가 발생했습니다.');
+                });
         }
     });
 
@@ -331,8 +303,8 @@
             const route = routes.find(r => r.routeId == routeId);
 
             if (filterValue === '' ||
-                (filterValue === 'true' && route.HolidayService) ||
-                (filterValue === 'false' && !route.HolidayService)) {
+                (filterValue === 'true' && route.holidayService) ||
+                (filterValue === 'false' && !route.holidayService)) {
                 card.style.display = '';
             } else {
                 card.style.display = 'none';
@@ -344,8 +316,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         renderRouteList();
     });
-</script>
-<script>
+
     // 현재 날짜와 시간 표시 함수
     function updateDateTime() {
         const now = new Date();
@@ -364,5 +335,6 @@
     updateDateTime();
     setInterval(updateDateTime, 60000);
 </script>
+
 </body>
 </html>
