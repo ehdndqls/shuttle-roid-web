@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>노선 추가/수정 - Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+    <title>노선 관리 - Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/route-modify.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.css">
 </head>
 <body>
 
@@ -15,92 +14,94 @@
 <nav th:replace="~{ nav.html::navbar }"></nav>
 
 <main>
-    <section class="route-form-section">
+    <section class="add-route-section">
         <div class="section-header">
-            <h2 th:text="${route.routeId == null ? '노선 추가' : '노선 수정'}">노선 추가</h2>
-            <div class="action-buttons">
-                <a href="/route" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> 목록으로
-                </a>
-            </div>
+            <h2 th:text="${route != null} ? '노선 정보 수정' : '노선 등록'">노선 등록</h2>
         </div>
+        <div class="form-container">
+            <form id="routeForm" class="route-form" th:action="@{/routes/modify}" method="post" th:object="${routeForm}">
+                <input type="hidden" id="routeId" name="routeId" th:value="${route != null} ? ${route.routeId} : ''" />
 
-        <form id="routeForm" th:action="@{/route/modify}" method="post" th:object="${routeResponseDto}" class="form-container">
-            <input type="hidden" id="routeId" th:field="*{routeId}" />
-            <input type="hidden" id="organizationId" th:field="*{organizationId}" />
-            <input type="hidden" id="stopsJson" name="stopsJson" />
-
-            <div class="form-section">
-                <h3>기본 정보</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="routeName">노선 이름</label>
-                        <input type="text" id="routeName" th:field="*{routeName}" required placeholder="예: 순천향대 순환노선" />
-                    </div>
-                    <div class="form-group">
-                        <label for="routeType">노선 타입</label>
-                        <select id="routeType" th:field="*{routeType}" required>
-                            <option value="">선택하세요</option>
-                            <option value="CIRCULATION">순환</option>
-                            <option value="ONE_WAY">편도</option>
-                            <option value="ROUND_TRIP">왕복</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="holidayService">휴일 운행</label>
-                        <select id="holidayService" th:field="*{HolidayService}" required>
-                            <option value="false">미운행</option>
-                            <option value="true">운행</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="typeRestriction">차량 유형 제한</label>
-                        <select id="typeRestriction" th:field="*{TypeRestriction}" required>
-                            <option value="">선택하세요</option>
-                            <option value="일반">일반</option>
-                            <option value="대형">대형</option>
-                            <option value="특수">특수</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="estimatedTime">예상 소요시간 (분)</label>
-                        <input type="number" id="estimatedTime" name="estimatedTime" min="1" max="300" placeholder="예: 30" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3>정류소 관리</h3>
-                <p class="section-description">노선에 포함될 정류소를 선택하고 순서를 조정하세요.</p>
-
-                <div class="busstop-selection">
-                    <div class="available-stops">
-                        <h4>사용 가능한 정류소</h4>
-                        <div class="stop-search">
-                            <input type="text" id="stopSearchInput" placeholder="정류소 검색..." />
+                <div class="form-section">
+                    <h3>기본 정보</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="routeName">노선 이름</label>
+                            <input type="text" id="routeName" name="routeName" th:value="${route != null} ? ${route.routeName} : ''" required placeholder="예: 순천향대 순환노선" />
                         </div>
-                        <div class="stop-list" id="availableStopsList">
-                            <!-- 사용 가능한 정류소 목록은 JavaScript로 동적 생성됩니다 -->
-                        </div>
-                    </div>
 
-                    <div class="selected-stops">
-                        <h4>선택된 정류소</h4>
-                        <div class="stop-list sortable-list" id="selectedStopsList">
-                            <!-- 선택된 정류소 목록은 JavaScript로 동적 생성됩니다 -->
+                        <div class="form-group">
+                            <label for="routeType">노선 타입</label>
+                            <select id="routeType" name="routeType" required>
+                                <option value="">선택하세요</option>
+                                <option value="CIRCULATION" th:selected="${route != null} ? ${route.routeType.name()} == 'CIRCULATION' : false">순환</option>
+                                <option value="ONE_WAY" th:selected="${route != null} ? ${route.routeType.name()} == 'ONE_WAY' : false">편도</option>
+                                <option value="ROUND_TRIP" th:selected="${route != null} ? ${route.routeType.name()} == 'ROUND_TRIP' : false">왕복</option>
+                            </select>
                         </div>
-                        <div class="stop-list-info">
-                            <i class="fas fa-info-circle"></i> 드래그하여 정류소 순서를 변경할 수 있습니다.
+
+                        <div class="form-group">
+                            <label for="holidayService">휴일 운행</label>
+                            <select id="holidayService" name="holidayService">
+                                <option value="false" th:selected="${route != null} ? !${route.holidayService} : true">미운행</option>
+                                <option value="true" th:selected="${route != null} ? ${route.holidayService} : false">운행</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="typeRestriction">차량 유형 제한</label>
+                            <select id="typeRestriction" name="typeRestriction" required>
+                                <option value="">선택하세요</option>
+                                <option value="Standard" th:selected="${route != null} ? ${route.typeRestriction.name()} == 'Standard' : false">일반</option>
+                                <option value="Special" th:selected="${route != null} ? ${route.typeRestriction.name()} == 'Special' : false">특수</option>
+                                <option value="Large" th:selected="${route != null} ? ${route.typeRestriction.name()} == 'Large' : false">대형</option>
+                            </select>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="location.href='/route'">취소</button>
-                <button type="submit" class="btn btn-primary">저장</button>
-            </div>
-        </form>
+                <div class="form-section">
+                    <h3>정류소 관리</h3>
+                    <p class="section-description">노선에 포함될 정류소를 선택하고 순서를 조정하세요.</p>
+
+                    <div class="busstop-selection">
+                        <div class="available-stops">
+                            <h4>사용 가능한 정류소</h4>
+                            <div class="stop-search">
+                                <input type="text" id="stopSearchInput" placeholder="정류소 검색..." />
+                            </div>
+                            <div class="stop-list" id="availableStopsList">
+                                <!-- 사용 가능한 정류소 목록 -->
+                                <div th:each="stop : ${stops}" class="stop-item" th:attr="data-id=${stop.stopId}">
+                                    <div class="stop-name" th:text="${stop.stopName}">정류소 이름</div>
+                                    <button type="button" class="add-stop-btn" th:attr="data-id=${stop.stopId}">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="selected-stops">
+                            <h4>선택된 정류소</h4>
+                            <div class="stop-list sortable-list" id="selectedStopsList">
+                                <!-- 선택된 정류소 목록은 JavaScript로 동적 생성됩니다 -->
+                            </div>
+                            <div class="stop-list-info">
+                                <i class="fas fa-info-circle"></i> 드래그하여 정류소 순서를 변경할 수 있습니다.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 선택된 정류소 ID를 저장할 hidden input -->
+                    <input type="hidden" id="stops" name="stopList" />
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="location.href='/routes'">취소</button>
+                    <button type="submit" class="btn btn-primary" th:text="${route != null} ? '수정하기' : '등록하기'">등록하기</button>
+                </div>
+            </form>
+        </div>
     </section>
 
     <aside th:replace="~{ aside.html::aside }"></aside>
@@ -109,119 +110,49 @@
 <footer th:replace="~{ footer.html::footer }"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-<script>
-    // 샘플 데이터 - 실제 구현 시 서버에서 가져옵니다
-    const allStops = [
-        { id: 1, name: "순천향대 정문", details: "정문 앞 버스 정류장" },
-        { id: 2, name: "향설생활관", details: "기숙사 앞" },
-        { id: 3, name: "공학관", details: "공대 건물 앞" },
-        { id: 4, name: "의료과학관", details: "의대 건물 앞" },
-        { id: 5, name: "학생회관", details: "식당 앞" },
-        { id: 6, name: "인문과학관", details: "인문대 건물 앞" },
-        { id: 7, name: "자연과학관", details: "자연대 건물 앞" },
-        { id: 8, name: "천안역", details: "천안역 동부 광장" },
-        { id: 9, name: "두정역", details: "두정역 1번 출구" },
-        { id: 10, name: "천안시청", details: "시청 앞 버스 정류장" },
-        { id: 11, name: "천안 터미널", details: "터미널 앞 버스 정류장" },
-        { id: 12, name: "천안 백화점", details: "백화점 앞" },
-        { id: 13, name: "천안 종합운동장", details: "운동장 정문 앞" }
-    ];
-
-    // 수정 모드인 경우 기존 노선 데이터 (샘플)
-    let currentRoute = {
+<script th:inline="javascript">
+    // 서버에서 받은 데이터
+    const busstops = /*[[${stops}]]*/ [];
+    const currentRoute = /*[[${route}]]*/ {
         routeId: null,
         routeName: "",
         routeType: "",
-        HolidayService: false,
-        TypeRestriction: "",
-        stops: [],
-        estimatedTime: ""
+        holidayService: false,
+        typeRestriction: "",
+        stops: []
     };
 
-    // URL에서 노선 ID 가져오기
-    const urlParams = new URLSearchParams(window.location.search);
-    const routeId = urlParams.get('id');
+    // 선택된 정류소 ID 목록
+    let selectedStops = [];
 
-    // 수정 모드인 경우 데이터 로드
-    if (routeId && routeId !== '0') {
-        // 실제 구현 시 서버에서 데이터를 가져옵니다
-        // 샘플 데이터로 대체
-        if (routeId === '1') {
-            currentRoute = {
-                routeId: 1,
-                routeName: "순천향대 순환노선",
-                routeType: "CIRCULATION",
-                HolidayService: false,
-                TypeRestriction: "일반",
-                stops: [1, 2, 3, 4, 5, 6, 7, 1],
-                estimatedTime: "25"
-            };
-        } else if (routeId === '2') {
-            currentRoute = {
-                routeId: 2,
-                routeName: "천안역 - 순천향대",
-                routeType: "ROUND_TRIP",
-                HolidayService: true,
-                TypeRestriction: "대형",
-                stops: [8, 9, 10, 1, 10, 9, 8],
-                estimatedTime: "40"
-            };
-        } else if (routeId === '3') {
-            currentRoute = {
-                routeId: 3,
-                routeName: "터미널 - 순천향대",
-                routeType: "ONE_WAY",
-                HolidayService: false,
-                TypeRestriction: "일반",
-                stops: [11, 12, 13, 1],
-                estimatedTime: "20"
-            };
-        }
-    }
+    // 페이지 로드 시 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+        initForm();
+    });
 
     // 폼 초기화
     function initForm() {
-        // 기본 정보 설정
-        document.getElementById('routeId').value = currentRoute.routeId || '';
-        document.getElementById('routeName').value = currentRoute.routeName || '';
-        document.getElementById('routeType').value = currentRoute.routeType || '';
-        document.getElementById('holidayService').value = currentRoute.HolidayService ? 'true' : 'false';
-        document.getElementById('typeRestriction').value = currentRoute.TypeRestriction || '';
-        document.getElementById('estimatedTime').value = currentRoute.estimatedTime || '';
+        // 이미 선택된 정류소가 있는 경우 (수정 모드)
+        if (currentRoute && currentRoute.stops && currentRoute.stops.length > 0) {
+            selectedStops = [...currentRoute.stops];
+            updateSelectedStopsList();
+            updateAvailableStopsList();
+        }
 
-        // 정류소 목록 초기화
-        renderAvailableStops();
-        renderSelectedStops();
-    }
+        // 정류소 검색 기능
+        document.getElementById('stopSearchInput').addEventListener('input', function() {
+            const searchText = this.value.toLowerCase();
+            document.querySelectorAll('#availableStopsList .stop-item').forEach(item => {
+                const stopName = item.querySelector('.stop-name').textContent.toLowerCase();
+                const stopDetails = item.querySelector('.stop-details') ?
+                    item.querySelector('.stop-details').textContent.toLowerCase() : '';
 
-    // 사용 가능한 정류소 목록 렌더링
-    function renderAvailableStops() {
-        const availableStopsList = document.getElementById('availableStopsList');
-        availableStopsList.innerHTML = '';
-
-        // 현재 선택된 정류소 ID 목록
-        const selectedStopIds = new Set(currentRoute.stops);
-
-        // 사용 가능한 정류소만 표시 (중복 제거)
-        allStops.forEach(stop => {
-            // 순환 노선의 경우 시작점과 끝점이 같을 수 있으므로 완전히 제외하지 않음
-            if (!selectedStopIds.has(stop.id) ||
-                (currentRoute.routeType === 'CIRCULATION' &&
-                    currentRoute.stops[0] === stop.id &&
-                    currentRoute.stops[currentRoute.stops.length - 1] === stop.id)) {
-
-                const stopItem = document.createElement('div');
-                stopItem.className = 'stop-item';
-                stopItem.setAttribute('data-id', stop.id);
-                stopItem.innerHTML = `
-          <div class="stop-name">${stop.name}</div>
-          <div class="stop-details">${stop.details}</div>
-          <button type="button" class="add-stop-btn" data-id="${stop.id}">
-            <i class="fas fa-plus"></i>
-          </button>
-        `;
-                availableStopsList.appendChild(stopItem);
-            }
+                if (stopName.includes(searchText) || stopDetails.includes(searchText)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         });
 
         // 정류소 추가 버튼 이벤트 리스너
@@ -231,25 +162,89 @@
                 addStop(stopId);
             });
         });
+
+        // 정류소 순서 변경 기능 초기화
+        initSortable();
+
+        // 노선 타입 변경 시 이벤트
+        document.getElementById('routeType').addEventListener('change', function() {
+            const routeType = this.value;
+
+            // 순환 노선인 경우 시작점과 끝점이 같아야 함
+            if (routeType === 'CIRCULATION' && selectedStops.length > 0) {
+                const firstStopId = selectedStops[0];
+                if (selectedStops[selectedStops.length - 1] !== firstStopId) {
+                    selectedStops.push(firstStopId);
+                    updateSelectedStopsList();
+                }
+            }
+        });
+
+        // 폼 제출 이벤트
+        document.getElementById('routeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 기본 유효성 검사
+            if (!this.checkValidity()) {
+                return false;
+            }
+
+            // 정류소 목록 유효성 검사
+            if (selectedStops.length < 2) {
+                alert('노선에는 최소 2개 이상의 정류소가 필요합니다.');
+                return false;
+            }
+
+            // 순환 노선인 경우 시작점과 끝점이 같아야 함
+            if (document.getElementById('routeType').value === 'CIRCULATION') {
+                const firstStopId = selectedStops[0];
+                const lastStopId = selectedStops[selectedStops.length - 1];
+
+                if (firstStopId !== lastStopId) {
+                    alert('순환 노선은 시작점과 끝점이 같아야 합니다.');
+                    return false;
+                }
+            }
+
+            // 정류소 목록을 JSON으로 변환하여 hidden 필드에 설정
+            document.getElementById('stops').value = JSON.stringify(selectedStops);
+
+            // 폼 제출
+            this.submit();
+        });
     }
 
-    // 선택된 정류소 목록 렌더링
-    function renderSelectedStops() {
+    // 사용 가능한 정류소 목록 업데이트
+    function updateAvailableStopsList() {
+        document.querySelectorAll('#availableStopsList .stop-item').forEach(item => {
+            const stopId = parseInt(item.getAttribute('data-id'));
+
+            // 이미 선택된 정류소는 숨김 처리
+            if (selectedStops.includes(stopId)) {
+                item.style.display = 'none';
+            } else {
+                item.style.display = '';
+            }
+        });
+    }
+
+    // 선택된 정류소 목록 업데이트
+    function updateSelectedStopsList() {
         const selectedStopsList = document.getElementById('selectedStopsList');
         selectedStopsList.innerHTML = '';
 
-        currentRoute.stops.forEach((stopId, index) => {
-            const stop = allStops.find(s => s.id === stopId);
+        selectedStops.forEach((stopId, index) => {
+            const stop = busstops.find(s => s.stopId === stopId);
             if (stop) {
                 const stopItem = document.createElement('div');
                 stopItem.className = 'stop-item';
-                stopItem.setAttribute('data-id', stop.id);
+                stopItem.setAttribute('data-id', stop.stopId);
                 stopItem.innerHTML = `
           <div class="stop-handle"><i class="fas fa-grip-lines"></i></div>
           <div class="stop-number">${index + 1}</div>
-          <div class="stop-name">${stop.name}</div>
-          <div class="stop-details">${stop.details}</div>
-          <button type="button" class="remove-stop-btn" data-id="${stop.id}" data-index="${index}">
+          <div class="stop-name">${stop.stopName}</div>
+          <div class="stop-details">${stop.details || ''}</div>
+          <button type="button" class="remove-stop-btn" data-id="${stop.stopId}" data-index="${index}">
             <i class="fas fa-times"></i>
           </button>
         `;
@@ -264,23 +259,22 @@
                 removeStop(index);
             });
         });
-
-        // 정류소 순서 변경 기능 초기화
-        initSortable();
     }
 
     // 정류소 추가
     function addStop(stopId) {
-        currentRoute.stops.push(stopId);
-        renderAvailableStops();
-        renderSelectedStops();
+        if (!selectedStops.includes(stopId)) {
+            selectedStops.push(stopId);
+            updateSelectedStopsList();
+            updateAvailableStopsList();
+        }
     }
 
     // 정류소 제거
     function removeStop(index) {
-        currentRoute.stops.splice(index, 1);
-        renderAvailableStops();
-        renderSelectedStops();
+        selectedStops.splice(index, 1);
+        updateSelectedStopsList();
+        updateAvailableStopsList();
     }
 
     // 정류소 순서 변경 기능 초기화
@@ -296,96 +290,13 @@
                 document.querySelectorAll('#selectedStopsList .stop-item').forEach(item => {
                     newStops.push(parseInt(item.getAttribute('data-id')));
                 });
-                currentRoute.stops = newStops;
+                selectedStops = newStops;
 
                 // 번호 업데이트
-                renderSelectedStops();
+                updateSelectedStopsList();
             }
         });
     }
-
-    // 정류소 검색 기능
-    document.getElementById('stopSearchInput').addEventListener('input', function() {
-        const searchText = this.value.toLowerCase();
-        document.querySelectorAll('#availableStopsList .stop-item').forEach(item => {
-            const stopName = item.querySelector('.stop-name').textContent.toLowerCase();
-            const stopDetails = item.querySelector('.stop-details').textContent.toLowerCase();
-
-            if (stopName.includes(searchText) || stopDetails.includes(searchText)) {
-                item.style.display = '';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    });
-
-    // 노선 타입 변경 시 이벤트
-    document.getElementById('routeType').addEventListener('change', function() {
-        const routeType = this.value;
-        currentRoute.routeType = routeType;
-
-        // 순환 노선인 경우 시작점과 끝점이 같아야 함
-        if (routeType === 'CIRCULATION' && currentRoute.stops.length > 0) {
-            const firstStopId = currentRoute.stops[0];
-            if (currentRoute.stops[currentRoute.stops.length - 1] !== firstStopId) {
-                currentRoute.stops.push(firstStopId);
-                renderSelectedStops();
-            }
-        }
-    });
-
-    // 폼 제출 이벤트
-    document.getElementById('routeForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // 기본 유효성 검사
-        if (!this.checkValidity()) {
-            return false;
-        }
-
-        // 정류소 목록 유효성 검사
-        if (currentRoute.stops.length < 2) {
-            alert('노선에는 최소 2개 이상의 정류소가 필요합니다.');
-            return false;
-        }
-
-        // 순환 노선인 경우 시작점과 끝점이 같아야 함
-        if (document.getElementById('routeType').value === 'CIRCULATION') {
-            const firstStopId = currentRoute.stops[0];
-            const lastStopId = currentRoute.stops[currentRoute.stops.length - 1];
-
-            if (firstStopId !== lastStopId) {
-                alert('순환 노선은 시작점과 끝점이 같아야 합니다.');
-                return false;
-            }
-        }
-
-        // 폼 데이터 수집
-        const formData = {
-            routeId: document.getElementById('routeId').value || null,
-            routeName: document.getElementById('routeName').value,
-            routeType: document.getElementById('routeType').value,
-            HolidayService: document.getElementById('holidayService').value === 'true',
-            TypeRestriction: document.getElementById('typeRestriction').value,
-            stops: currentRoute.stops,
-            estimatedTime: document.getElementById('estimatedTime').value
-        };
-
-        // 정류소 목록을 JSON으로 변환하여 hidden 필드에 설정
-        document.getElementById('stopsJson').value = JSON.stringify(formData.stops);
-
-        // 실제 구현 시 서버로 폼 제출
-        console.log('제출할 데이터:', formData);
-        alert('노선이 저장되었습니다.');
-
-        // 목록 페이지로 이동
-        window.location.href = '/route';
-    });
-
-    // 페이지 로드 시 폼 초기화
-    document.addEventListener('DOMContentLoaded', function() {
-        initForm();
-    });
 </script>
 
 </body>

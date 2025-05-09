@@ -18,7 +18,7 @@
         <div class="section-header">
             <h2>노선 관리</h2>
             <div class="action-buttons">
-                <a href="/route/modify/0" id="addRouteBtn" class="btn btn-primary">
+                <a href="/routes/modify/0" id="addRouteBtn" class="btn btn-primary">
                     <i class="fas fa-plus"></i> 노선 추가
                 </a>
             </div>
@@ -27,7 +27,7 @@
         <div class="route-container">
             <!-- 노선 목록 섹션 -->
             <div class="route-list-section">
-                <form id="searchForm" action="/route/search" method="get" class="search-filter">
+                <form id="searchForm" action="/routes/search" method="get" class="search-filter">
                     <div class="search-box">
                         <input type="text" id="searchInput" name="searchText" placeholder="노선 이름으로 검색">
                         <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
@@ -195,7 +195,7 @@
         document.getElementById('noRouteSelected').style.display = 'none';
 
         // 수정 버튼 링크 업데이트
-        document.getElementById('editRouteBtn').href = `/route/modify/${routeId}`;
+        document.getElementById('editRouteBtn').href = `/routes/modify/${routeId}`;
         document.getElementById('deleteRouteBtn').setAttribute('data-id', routeId);
 
         // 노선 정보 업데이트

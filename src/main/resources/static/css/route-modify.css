@@ -15,56 +15,6 @@
     color: #2c3e50;
 }
 
-.action-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-/* 버튼 스타일 */
-.btn {
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    border: none;
-    text-decoration: none;
-}
-
-.btn i {
-    margin-right: 0.5rem;
-}
-
-.btn-primary {
-    background-color: #3498db;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #2980b9;
-}
-
-.btn-secondary {
-    background-color: #95a5a6;
-    color: white;
-}
-
-.btn-secondary:hover {
-    background-color: #7f8c8d;
-}
-
-.btn-danger {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #c0392b;
-}
-
 /* 폼 컨테이너 */
 .form-container {
     background-color: white;
@@ -105,6 +55,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .form-group label {
@@ -137,8 +88,40 @@
     color: #bdc3c7;
 }
 
-.form-group input[type="number"] {
-    width: 100%;
+/* 버튼 스타일 */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+}
+
+.btn i {
+    margin-right: 0.5rem;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
 }
 
 /* 정류소 선택 영역 */
@@ -341,10 +324,6 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
-    }
-
-    .action-buttons {
-        width: 100%;
     }
 
     .form-actions {

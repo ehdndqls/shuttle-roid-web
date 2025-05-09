@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface BusStopsRepository extends JpaRepository<BusStops, Long> {
     Page<BusStops> findByOrganizationId(Long organizationId, Pageable pageable);
+    List<BusStops> findByOrganizationId(Long organizationId);
 
     @Query("SELECT b FROM BusStops b WHERE " +
             "(:searchText IS NULL OR b.stopName LIKE %:searchText%) AND " +
