@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalTime;
+
 @Entity
 @Getter
 @Setter
@@ -33,4 +35,15 @@ public class DailySchedules {
     @ManyToOne(fetch = FetchType.LAZY) //  다대일 관계 설정 (DailySchedules N : 1 Vehicles)
     @JoinColumn(name = "vehcicleId", nullable = false) // 외래 키 이름 지정
     private Vehicles vehicle;
+
+    private LocalTime startTime;
+
+    @Enumerated(EnumType.STRING)
+    private ScheduleStatus status;
+
+    public enum ScheduleStatus {
+        READY,      // 운행준비
+        RUNNING,    // 운행중
+        COMPLETED   // 운행완료
+    }
 }

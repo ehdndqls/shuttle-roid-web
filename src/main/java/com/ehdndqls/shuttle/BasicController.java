@@ -21,7 +21,6 @@ public class BasicController {
     }
 
     @GetMapping("/about")
-    @ResponseBody
     String about(){
         return "index.html";
     }
