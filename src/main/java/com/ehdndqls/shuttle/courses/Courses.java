@@ -1,12 +1,10 @@
 package com.ehdndqls.shuttle.courses;
 
-import com.ehdndqls.shuttle.organizations.Organizations;
+import com.ehdndqls.shuttle.routes.Routes;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
 
 @Entity
 @Getter

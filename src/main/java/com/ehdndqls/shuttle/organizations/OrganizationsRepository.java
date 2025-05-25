@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface OrganizationsRepository  extends JpaRepository<Organizations, Long> {
+public interface OrganizationsRepository  extends JpaRepository<Organizations, Integer> {
 
     Optional<Organizations> findByOrganizationName(String organizationName);
 }

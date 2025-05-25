@@ -14,10 +14,10 @@ public class Drivers {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long driverId;
+    private Integer driverId;
 
     @Column(nullable = false)
-    private Long organizationId;
+    private Integer organizationId;
 
     private String driverName;
     private Integer joinYear;

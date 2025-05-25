@@ -29,7 +29,7 @@ public class DriversController {
     @GetMapping("/driver/page/{page}")
     public String driver(Authentication auth, Model model, @PathVariable Integer page) {
 
-        Long id = organizationsService.getOrganizationId(auth);
+        Integer id = organizationsService.getOrganizationId(auth);
 
         if (page == null || page < 1) {
             page = 1;
@@ -44,14 +44,14 @@ public class DriversController {
     }
 
     @GetMapping("/driver/modify/{id}")
-    public String modify(@PathVariable Long id, Model model) {
+    public String modify(@PathVariable Integer id, Model model) {
         driversRepository.findById(id).ifPresent(driver -> model.addAttribute("driver", driver));
         return "modify-driver.html";
     }
 
     @PostMapping("/driver/modify")
     public String modifyDriver(@ModelAttribute DriverForm driverForm, Authentication auth) {
-        Long id = organizationsService.getOrganizationId(auth);
+        Integer id = organizationsService.getOrganizationId(auth);
         driversService.modify(driverForm, id);
         return "redirect:/driver/page/1";
     }
@@ -61,7 +61,7 @@ public class DriversController {
                          @RequestParam(required = false) Drivers.DriverType type,
                          @RequestParam(required = false) Integer joinYear,
                          Model model, Authentication auth) {
-        Long id = organizationsService.getOrganizationId(auth);
+        Integer id = organizationsService.getOrganizationId(auth);
         List<Drivers> driverList = driversService.search(searchText, type, joinYear ,id);
         model.addAttribute("Drivers", driverList);
         model.addAttribute("currentPage", 1); // 현재 페이지
@@ -70,7 +70,7 @@ public class DriversController {
     }
 
     @DeleteMapping("/driver/delete/{id}")
-    public ResponseEntity<Object> deleteDriver(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteDriver(@PathVariable Integer id) {
         driversRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

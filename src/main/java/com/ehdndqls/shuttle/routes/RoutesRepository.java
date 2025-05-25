@@ -1,0 +1,25 @@
+package com.ehdndqls.shuttle.routes;
+
+import com.ehdndqls.shuttle.busstop.RouteId;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+
+public interface RoutesRepository extends JpaRepository<Routes, RouteId> {
+    List<Routes> findByOrganizationId(Integer organizationId);
+
+    @Query("SELECT r FROM Routes r WHERE " +
+            "(:searchText IS NULL OR r.routeName LIKE %:searchText% OR str(r.id.routeId) = :searchText) AND " +
+            "(:routeType IS NULL OR r.routeType = :routeType) AND " +
+            "(:routeNum IS NULL OR r.routeNum = :routeNum) AND " +
+            "(:organizationId IS NULL OR r.id.organizationId = :organizationId)")
+    List<Routes> searchRoutes(
+            @Param("searchText") String searchText,
+            @Param("routeType") Routes.RouteType type,
+            @Param("routeNum") String routeNum,
+            @Param("organizationId") Integer organizationId
+    );
+}
+

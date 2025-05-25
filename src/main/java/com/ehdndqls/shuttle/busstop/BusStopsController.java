@@ -32,7 +32,7 @@ public class BusStopsController {
     @GetMapping("/busstop/page/{page}")
     public String busStop(Authentication auth, Model model, @PathVariable Integer page) {
 
-        Long id = organizationsService.getOrganizationId(auth);
+        Integer id = organizationsService.getOrganizationId(auth);
 
         if (page == null || page < 1) {
             page = 1;
@@ -48,22 +48,22 @@ public class BusStopsController {
             // 여기 레파지토리에서 쿼리로 꺼내오는거
 
     @GetMapping("/busstop/modify/{id}")
-    public String modify(@PathVariable Long id, Model model) {
+    public String modify(@PathVariable BusStopId id, Model model) {
         busStopsRepository.findById(id).ifPresent(busStop -> model.addAttribute("busStop", busStop));
         return "modify-busstop.html";
     }
 
     @PostMapping("/busstop/modify")
     public String modifyBusStop(@ModelAttribute BusStopForm busStopForm, Authentication auth) {
-        Long id = organizationsService.getOrganizationId(auth);
-        busStopsService.modify(busStopForm, id);
+        Integer organizationId = organizationsService.getOrganizationId(auth);
+        busStopsService.modify(busStopForm, organizationId);
         return "redirect:/busstop/page/1";
     }
 
     @GetMapping("/busstop/search")
     public String search(@RequestParam(required = false) String searchText,
                          Model model, Authentication auth) {
-        Long id = organizationsService.getOrganizationId(auth);
+        Integer id = organizationsService.getOrganizationId(auth);
         List<BusStops> busStopList = busStopsService.search(searchText, id);
         model.addAttribute("BusStops", busStopList);
         model.addAttribute("currentPage", 1); // 현재 페이지
@@ -72,7 +72,7 @@ public class BusStopsController {
     }
 
     @DeleteMapping("/busstop/delete/{id}")
-    public ResponseEntity<Object> deleteBusStop(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteBusStop(@PathVariable BusStopId id) {
         busStopsRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

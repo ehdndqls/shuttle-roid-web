@@ -25,7 +25,7 @@ public class OrganizationsService {
         organizationsRepository.save(organization);
     }
 
-    public Long getOrganizationId(Authentication authentication) {
+    public Integer getOrganizationId(Authentication authentication) {
         if (authentication == null || !(authentication.getPrincipal() instanceof OrganizationUserDetails)) {
             throw new IllegalStateException("유효하지 않은 인증 정보입니다.");
         }

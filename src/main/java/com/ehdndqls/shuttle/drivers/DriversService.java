@@ -17,7 +17,7 @@ public class DriversService {
         this.driversRepository = driversRepository;
     }
 
-    public void modify(DriverForm driverForm, Long organizationId) {
+    public void modify(DriverForm driverForm, Integer organizationId) {
         Drivers driver;
         // 신균지 중곤지 확인
         if(driverForm.getId() != null) {
@@ -39,7 +39,7 @@ public class DriversService {
         driversRepository.save(driver);
     }
 
-    public List<Drivers> search(String searchText, Drivers.DriverType type, Integer joinYear, Long organizationId) {
+    public List<Drivers> search(String searchText, Drivers.DriverType type, Integer joinYear, Integer organizationId) {
         if (searchText != null && searchText.isBlank()) {
             searchText = null;
         }

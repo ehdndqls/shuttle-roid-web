@@ -10,8 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 
-public interface  DriversRepository extends JpaRepository<Drivers, Long> {
-    Page<Drivers> findByOrganizationId(Long organizationId, Pageable pageable);
+public interface  DriversRepository extends JpaRepository<Drivers, Integer> {
+    Page<Drivers> findByOrganizationId(Integer organizationId, Pageable pageable);
 
 
     @Query("SELECT d FROM Drivers d WHERE " +
@@ -23,7 +23,7 @@ public interface  DriversRepository extends JpaRepository<Drivers, Long> {
             @Param("searchText") String searchText,
             @Param("type") Drivers.DriverType type,
             @Param("joinYear") Integer joinYear,
-            @Param("organizationId") Long organizationId
+            @Param("organizationId") Integer organizationId
     );
 
 }

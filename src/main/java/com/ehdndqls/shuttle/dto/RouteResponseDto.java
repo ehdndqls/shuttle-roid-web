@@ -1,7 +1,7 @@
 package com.ehdndqls.shuttle.dto;
 
 import com.ehdndqls.shuttle.busstop.BusStops;
-import com.ehdndqls.shuttle.courses.Routes;
+import com.ehdndqls.shuttle.routes.Routes;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,10 +14,9 @@ import java.util.stream.Collectors;
 @Setter
 public class RouteResponseDto {
     private Long routeId;
+    private String routeNum;
     private String routeName;
     private Routes.RouteType routeType;
-    private boolean holidayService;
-    private Routes.VehicleType typeRestriction;
     private String estimatedTime;
 
     private List<StopDto> stops;

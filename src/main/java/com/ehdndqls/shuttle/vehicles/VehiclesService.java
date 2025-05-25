@@ -17,7 +17,7 @@ public class VehiclesService {
         this.vehiclesRepository = vehiclesRepository;
     }
 
-    public void modify(VehicleForm vehicleForm, Long organizationId) {
+    public void modify(VehicleForm vehicleForm, Integer organizationId) {
         Vehicles vehicle;
         // 신균지 중곤지 확인
         if(vehicleForm.getVehicleId() != null) {
@@ -41,7 +41,7 @@ public class VehiclesService {
         vehiclesRepository.save(vehicle);
     }
 
-    public List<Vehicles> search(String searchText, Vehicles.VehicleType vehicleType, Integer vehicleYear, Long organizationId) {
+    public List<Vehicles> search(String searchText, Vehicles.VehicleType vehicleType, Integer vehicleYear, Integer organizationId) {
         if (searchText != null && searchText.isBlank()) {
             searchText = null;
         }

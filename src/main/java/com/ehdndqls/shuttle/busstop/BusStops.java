@@ -12,23 +12,41 @@ import lombok.ToString;
 
 public class BusStops {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stopId;
-    private String stopName;
-    private Double latitude;
-    private Double longitude;
-    private Integer sensitivity;
-    private Long organizationId;
+    @EmbeddedId
+    private BusStopId id;   // 기본키 -> 복합키: stopId + organizationId
 
-    @PrePersist // 만약 sensitivity값이 없다면 자동으로 200으로 설정
+    // 정류소 이름
+    @Column(nullable = false)
+    private String stopName;
+
+    // 위도
+    @Column(nullable = false)
+    private Double latitude;
+
+    // 경도
+    @Column(nullable = false)
+    private Double longitude;
+
+    // 접근, 도착, 출발 판정 거리
+    @Column(nullable = false)
+    private Integer approach;
+    @Column(nullable = false)
+    private Integer arrival;
+    @Column(nullable = false)
+    private Integer leave;
+
+    @PrePersist // default approach -> 150 / arrival -> 30 / leave -> 50
     public void prePersist() {
-        if (sensitivity == null) {
-            sensitivity = 200;
+        if (approach == null) {
+            approach = 150;
+        }
+        if (arrival == null) {
+            arrival = 30;
+        }
+        if (leave == null) {
+            leave = 50;
         }
     }
-    //private var notice;
-
 
 
 }

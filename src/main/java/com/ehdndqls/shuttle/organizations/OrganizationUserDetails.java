@@ -20,7 +20,7 @@ public class OrganizationUserDetails implements UserDetails {
         return Collections.emptyList();
     }
 
-    public Long getId() { return organization.getOrganizationId(); }
+    public Integer getId() { return organization.getOrganizationId(); }
 
     @Override
     public String getPassword() {

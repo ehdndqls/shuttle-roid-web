@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 public class VehicleForm {
 
-    private Long vehicleId;
+    private Integer vehicleId;
     private String vehicleNumber;
     private String vehicleModel;
     private Integer vehicleYear;

@@ -29,7 +29,7 @@ public class VehiclesController {
 
     @GetMapping("/vehicle/page/{page}")
     public String vehicle(Authentication auth, Model model, @PathVariable Integer page) {
-        Long id = organizationsService.getOrganizationId(auth);
+        Integer id = organizationsService.getOrganizationId(auth);
 
         if (page == null || page < 1) {
             page = 1;
@@ -44,14 +44,14 @@ public class VehiclesController {
     }
 
     @GetMapping("/vehicle/modify/{id}")
-    public String modify(@PathVariable Long id, Model model) {
+    public String modify(@PathVariable Integer id, Model model) {
         vehiclesRepository.findById(id).ifPresent(vehicle -> model.addAttribute("vehicle", vehicle));
         return "modify-vehicle.html";
     }
 
     @PostMapping("/vehicle/modify")
     public String modifyDriver(@ModelAttribute VehicleForm vehicleForm, Authentication auth) {
-        Long id = organizationsService.getOrganizationId(auth);
+        Integer id = organizationsService.getOrganizationId(auth);
         vehiclesService.modify(vehicleForm, id);
         System.out.println(vehicleForm);
         return "redirect:/vehicle/page/1";
@@ -62,7 +62,7 @@ public class VehiclesController {
                          @RequestParam(required = false) Vehicles.VehicleType vehicleType,
                          @RequestParam(required = false) Integer vehicleYear,
                          Model model, Authentication auth) {
-        Long id = organizationsService.getOrganizationId(auth);
+        Integer id = organizationsService.getOrganizationId(auth);
         List<Vehicles> vehicleList = vehiclesService.search(searchText, vehicleType, vehicleYear ,id);
         model.addAttribute("Vehicles", vehicleList);
         model.addAttribute("currentPage", 1); // 현재 페이지

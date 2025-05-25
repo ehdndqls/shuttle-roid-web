@@ -15,10 +15,10 @@ public class Vehicles {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long vehicleId;
+    private Integer vehicleId;
 
     @Column(nullable = false)
-    private Long organizationId;
+    private Integer organizationId;
 
     private String vehicleNumber;
     private Integer seatCapacity;
