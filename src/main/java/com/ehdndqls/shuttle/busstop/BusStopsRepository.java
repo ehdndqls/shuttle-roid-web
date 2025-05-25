@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BusStopsRepository extends JpaRepository<BusStops, Long> {
     Page<BusStops> findByOrganizationId(Long organizationId, Pageable pageable);
@@ -20,5 +21,8 @@ public interface BusStopsRepository extends JpaRepository<BusStops, Long> {
             @Param("searchText") String searchText,
             @Param("organizationId") Long organizationId
     );
+
+    @Query("SELECT s.stopName FROM BusStops s WHERE s.stopId = :id")
+    Optional<String> findNameById(@Param("id") Long id);
 
 }

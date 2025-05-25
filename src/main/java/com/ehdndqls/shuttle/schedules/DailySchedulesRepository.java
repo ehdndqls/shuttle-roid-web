@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface DailySchedulesRepository extends JpaRepository<DailySchedules, Long> {
-    Optional<DailySchedules> findByScheduleId(Long scheduleId);
+    Optional<DailySchedules> findByDailyScheduleId(Long dailyScheduleId);
 }

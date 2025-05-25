@@ -20,9 +20,7 @@ public class DailySchedules {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dailyScheduleId;
 
-    @ManyToOne(fetch = FetchType.LAZY) // 다대일 관계 설정 (DailySchedules N : 1 Organizations)
-    @JoinColumn(name = "organizationId", nullable = false) // 외래 키 이름 지정
-    private Organizations organization;
+    private Long organizationId;
 
     @ManyToOne(fetch = FetchType.LAZY) // 다대일 관계 설정 (DailySchedules N : 1 Route)
     @JoinColumn(name = "routeId", nullable = false) // 외래 키 이름 지정
@@ -33,7 +31,7 @@ public class DailySchedules {
     private Drivers driver;
 
     @ManyToOne(fetch = FetchType.LAZY) //  다대일 관계 설정 (DailySchedules N : 1 Vehicles)
-    @JoinColumn(name = "vehcicleId", nullable = false) // 외래 키 이름 지정
+    @JoinColumn(name = "vehicleId", nullable = false) // 외래 키 이름 지정
     private Vehicles vehicle;
 
     private LocalTime startTime;

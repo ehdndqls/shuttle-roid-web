@@ -12,7 +12,7 @@
 <header th:replace="~{ header.html::header }"></header>
 
 <nav th:replace="~{ nav.html::navbar }"></nav>
-
+<!--
 <main>
     <section class="dashboard">
         <div class="dashboard-header">
@@ -116,7 +116,27 @@
             </table>
         </div>
     </section>
+-->
 
+<main>
+    <h2>운행 중인 실시간 차량 정보</h2>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+        <tr>
+            <th>스케줄 ID</th>
+            <th>현재 정류장</th>
+            <th>상태</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Thymeleaf 사용 시 예시 -->
+        <tr th:each="fleet : ${realTimeList}">
+            <td th:text="${fleet.dailyScheduleId}">2</td>
+            <td th:text="${fleet.currentStop}">운행시작</td>
+            <td th:text="${fleet.status}">DEPARTURE</td>
+        </tr>
+        </tbody>
+    </table>
     <aside th:replace="~{ aside.html::aside }"></aside>
 </main>
 
