@@ -42,7 +42,7 @@ public class RouteForm {
                             .split(","))                                     // 쉼표 기준 나눔
                     .map(String::trim)
                     .map(Integer::parseInt)
-                    .collect(Collectors.toList());                   // List<Long>으로 변환
+                    .collect(Collectors.toList());                   // List<Integer>으로 변환
         } catch (Exception e) {
             throw new IllegalArgumentException("stops 파싱 실패: " + stopList, e);
         }

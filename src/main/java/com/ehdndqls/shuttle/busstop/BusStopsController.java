@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class BusStopsController {
         if (page == null || page < 1) {
             page = 1;
         }
-        Page<BusStops> busStopList = busStopsRepository.findByOrganizationId(id, PageRequest.of(page-1, 5));
+        Page<BusStops> busStopList = busStopsRepository.findById_OrganizationId(id, PageRequest.of(page-1, 5));
 
         model.addAttribute("BusStops", busStopList);  // 정류소 리스트
         model.addAttribute("currentPage", page); // 현재 페이지
@@ -47,8 +48,12 @@ public class BusStopsController {
     }
             // 여기 레파지토리에서 쿼리로 꺼내오는거
 
-    @GetMapping("/busstop/modify/{id}")
-    public String modify(@PathVariable BusStopId id, Model model) {
+    @GetMapping("/busstop/modify")
+    public String modify(Authentication auth, @RequestParam(value = "stopId", required = false) Integer stopId, Model model) {
+        if(stopId == null) {
+            stopId = 0;
+        }
+        BusStopId id = new BusStopId(organizationsService.getOrganizationId(auth), stopId);
         busStopsRepository.findById(id).ifPresent(busStop -> model.addAttribute("busStop", busStop));
         return "modify-busstop.html";
     }
@@ -71,8 +76,9 @@ public class BusStopsController {
         return "busstop.html";
     }
 
-    @DeleteMapping("/busstop/delete/{id}")
-    public ResponseEntity<Object> deleteBusStop(@PathVariable BusStopId id) {
+    @DeleteMapping("/busstop/delete/{stopId}")
+    public ResponseEntity<Object> deleteBusStop(Authentication auth, @PathVariable Integer stopId) {
+        BusStopId id = new BusStopId(organizationsService.getOrganizationId(auth), stopId);
         busStopsRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

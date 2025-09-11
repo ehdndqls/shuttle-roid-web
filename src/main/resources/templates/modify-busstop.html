@@ -32,7 +32,7 @@
     <div class="form-container">
       <form id="addBusstopForm" class="busstop-form" th:action="@{/busstop/modify}" method="post" th:object="${busstopForm}">
         <div class="form-grid">
-          <input type="hidden" id="stopId" name="stopId" th:value="${busstop != null} ? ${busstop.stopId} : ''" />
+          <input type="hidden" id="stopId" name="stopId" th:value="${busstop != null} ? ${busstop.id.stopId} : ''" />
 
           <!-- 정류소 이름 -->
           <div class="form-group">
@@ -58,12 +58,35 @@
                    readonly />
           </div>
 
-          <!-- 민감도 -->
+          <!-- 민감도(접근) -->
           <div class="form-group">
-            <label for="sensitivity">민감도 (m)</label>
-            <input type="number" id="sensitivity" name="sensitivity" min="0" max="100"
-                   th:value="${busstop != null} ? ${busstop.sensitivity} : ''"
+            <label for="approach">민감도-접근 (m)</label>
+            <input type="number" id="approach" name="approach" min="0" max="100"
+                   th:value="${busstop != null} ? ${busstop.approach} : ''"
                    required placeholder="예: 30" />
+          </div>
+
+          <!-- 민감도(도착) -->
+          <div class="form-group">
+            <label for="arrival">민감도-도착 (m)</label>
+            <input type="number" id="arrival" name="arrival" min="0" max="100"
+                   th:value="${busstop != null} ? ${busstop.arrival} : ''"
+                   required placeholder="예: 30" />
+          </div>
+
+          <!-- 민감도(출발) -->
+          <div class="form-group">
+            <label for="departure">민감도-출발 (m)</label>
+            <input type="number" id="departure" name="departure" min="0" max="100"
+                   th:value="${busstop != null} ? ${busstop.approach} : ''"
+                   required placeholder="예: 30" />
+          </div>
+
+          <!-- 경유지 여부 -->
+          <div class="form-group">
+            <label for="via" class="checkbox-label">경유지 여부</label>
+            <input type="checkbox" id="via" name="via"
+                   th:checked="${busstop != null and busstop.via}" />
           </div>
         </div>
 

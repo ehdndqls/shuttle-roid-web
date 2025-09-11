@@ -306,6 +306,25 @@
     margin-top: 1rem;
 }
 
+/* 체크박스 기본 스타일 */
+.form-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #3498db; /* 메인 파랑색 */
+    cursor: pointer;
+}
+
+/* 체크박스와 라벨 나란히 */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+
 /* 반응형 디자인 */
 @media (max-width: 1200px) {
     .form-grid {
@@ -331,3 +350,4 @@
 .add-busstop-section {
     width: 100%;
 }
+

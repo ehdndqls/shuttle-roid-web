@@ -33,9 +33,9 @@ public class BusStops {
     @Column(nullable = false)
     private Integer arrival;
     @Column(nullable = false)
-    private Integer leave;
+    private Integer departure;
 
-    @PrePersist // default approach -> 150 / arrival -> 30 / leave -> 50
+    @PrePersist // default approach -> 150 / arrival -> 30 / departure -> 50
     public void prePersist() {
         if (approach == null) {
             approach = 150;
@@ -43,8 +43,8 @@ public class BusStops {
         if (arrival == null) {
             arrival = 30;
         }
-        if (leave == null) {
-            leave = 50;
+        if (departure == null) {
+            departure = 50;
         }
     }
 

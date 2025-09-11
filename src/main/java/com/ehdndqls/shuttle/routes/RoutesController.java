@@ -38,7 +38,7 @@ public class RoutesController {
     public String modify(@PathVariable RouteId id, Model model, Authentication auth) {
         Integer organizationId = organizationsService.getOrganizationId(auth);
         routesRepository.findById(id).ifPresent(routes -> model.addAttribute("route", routes));
-        model.addAttribute("stops", busStopsRepository.findByOrganizationId(organizationId));
+        model.addAttribute("stops", busStopsRepository.findById_OrganizationId(organizationId));
         return "modify-route.html";
     }
 

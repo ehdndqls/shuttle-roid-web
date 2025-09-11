@@ -16,7 +16,7 @@ public class BusStopForm {
     private Double longitude;
     private Integer approach;
     private Integer arrival;
-    private Integer leave;
+    private Integer departure;
     private Boolean via;
 
     // 기본 생성자
@@ -29,14 +29,14 @@ public class BusStopForm {
                        Double latitude,
                        Double longitude,
                        Boolean via,
-                       Integer approach, Integer arrival, Integer leave) {
+                       Integer approach, Integer arrival, Integer departure) {
         this.stopId = id;
         this.stopName = stopName;
         this.latitude = latitude;
         this.longitude = longitude;
         this.approach = approach;
         this.arrival = arrival;
-        this.leave = leave;
+        this.departure = departure;
         this.via = via;
     }
 }

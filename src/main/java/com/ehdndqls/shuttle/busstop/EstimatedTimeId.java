@@ -12,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor  // JPA에서 사용하기 위한 tag
 @AllArgsConstructor
 public class EstimatedTimeId implements Serializable {
-    private BusStopId departureStop;
-    private BusStopId arrivalStop;
+    private Integer departureStop;
+    private Integer arrivalStop;
+    private Integer organizationId;
 }

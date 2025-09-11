@@ -20,9 +20,10 @@ public class RoutesService {
     private final EstimatedTimeRepository estimatedTimeRepository;
 
 
+    // Route들을 DTO로 변환하여 반환하는 함수
     public List<RouteResponseDto> getRoutesForOrganization(Integer organizationId) {
         // organizationId가 일치하는 route들을 찾기
-        List<Routes> routesList = routesRepository.findByOrganizationId(organizationId);
+        List<Routes> routesList = routesRepository.findById_OrganizationId(organizationId);
 
         // 각 Route를 DTO로 변환
         return routesList.stream()
@@ -50,7 +51,7 @@ public class RoutesService {
 
         // ID에 맞는 BusStops를 DB에서 조회
         List<BusStops> stopList = busStopsRepository
-                .findAllByOrganizationIdAndStopIds(route.getId().getOrganizationId(),stopIds);
+                .findAllById_OrganizationIdAndId_StopIdIn(route.getId().getOrganizationId(),stopIds);
 
         // 순서대로 정렬
         List<BusStops> orderedStops = stopIds.stream()
@@ -118,7 +119,7 @@ public class RoutesService {
     }
 
     void updateEstimatedTime(BusStopId departureStop, BusStopId arrivalStop) {
-        estimatedTimeRepository
+        //estimatedTimeRepository
     }
 
 }

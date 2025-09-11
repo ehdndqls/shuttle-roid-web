@@ -8,7 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface RoutesRepository extends JpaRepository<Routes, RouteId> {
-    List<Routes> findByOrganizationId(Integer organizationId);
+    // 수정된 메서드
+    List<Routes> findById_OrganizationId(Integer organizationId);
 
     @Query("SELECT r FROM Routes r WHERE " +
             "(:searchText IS NULL OR r.routeName LIKE %:searchText% OR str(r.id.routeId) = :searchText) AND " +
@@ -22,4 +23,5 @@ public interface RoutesRepository extends JpaRepository<Routes, RouteId> {
             @Param("organizationId") Integer organizationId
     );
 }
+
 

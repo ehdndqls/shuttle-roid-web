@@ -1,6 +1,5 @@
 package com.ehdndqls.shuttle.busstop;
 
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,8 +11,10 @@ import java.util.Optional;
 
 public interface BusStopsRepository extends JpaRepository<BusStops, BusStopId> {
 
-    Page<BusStops> findByOrganizationId(Integer organizationId, Pageable pageable);
-    List<BusStops> findByOrganizationId(Integer organizationId);
+    // EmbeddedId 접근 시 id. 접두어 필요
+    Page<BusStops> findById_OrganizationId(Integer organizationId, Pageable pageable);
+    List<BusStops> findById_OrganizationId(Integer organizationId);
+
     Optional<BusStops> findById(BusStopId id);
 
     @Query("SELECT b FROM BusStops b WHERE " +
@@ -34,6 +35,6 @@ public interface BusStopsRepository extends JpaRepository<BusStops, BusStopId> {
             "WHERE b.id.organizationId = :organizationId AND b.id.stopId >= 9000")
     Optional<Integer> findMaxViaStopIdByOrganizationId(@Param("organizationId") Integer organizationId);
 
-    List<BusStops> findAllByOrganizationIdAndStopIds(Integer organizationId, List<Integer> stopIds);
-
+    // 특정 정류소 ID 목록 조회
+    List<BusStops> findAllById_OrganizationIdAndId_StopIdIn(Integer organizationId, List<Integer> stopIds);
 }

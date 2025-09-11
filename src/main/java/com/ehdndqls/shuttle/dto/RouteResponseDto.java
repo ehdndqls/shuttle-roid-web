@@ -1,6 +1,7 @@
 package com.ehdndqls.shuttle.dto;
 
 import com.ehdndqls.shuttle.busstop.BusStops;
+import com.ehdndqls.shuttle.busstop.RouteId;
 import com.ehdndqls.shuttle.routes.Routes;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class RouteResponseDto {
-    private Long routeId;
+    private RouteId routeId;
     private String routeNum;
     private String routeName;
     private Routes.RouteType routeType;
@@ -22,12 +23,10 @@ public class RouteResponseDto {
     private List<StopDto> stops;
 
     public RouteResponseDto(Routes route, List<BusStops> orderedStops) {
-        this.routeId = route.getRouteId();
+        this.routeId = route.getId();
         this.routeName = route.getRouteName();
         this.routeType = route.getRouteType();
-        this.holidayService = route.getHolidayService();
-        this.typeRestriction = route.getTypeRestriction();
-        this.estimatedTime = "아직구현 안함요";
+        this.estimatedTime = route.getEstimatedTime();
 
         // Stop -> StopDto 변환
         this.stops = orderedStops.stream()

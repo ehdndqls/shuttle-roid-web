@@ -17,10 +17,6 @@ public class Courses {
 
     private String courseName;
 
-    @ManyToOne(fetch = FetchType.LAZY) // 다대일 관계 설정 (Courses N : 1 Route)
-    @JoinColumn(name = "routeId", nullable = false) // 외래 키 이름 지정
-    private Routes route;
-
 
     @Column(nullable = false)
     private Long organizationId;

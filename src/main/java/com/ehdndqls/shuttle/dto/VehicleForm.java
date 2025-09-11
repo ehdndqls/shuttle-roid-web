@@ -23,7 +23,7 @@ public class VehicleForm {
     }
 
     // 모든 필드를 사용하는 생성자
-    public VehicleForm(Long vehicleId, String vehicleNumber, String vehicleModel, Integer vehicleYear, Vehicles.VehicleType vehicleType, Integer seatCapacity, Integer standCapacity) {
+    public VehicleForm(Integer vehicleId, String vehicleNumber, String vehicleModel, Integer vehicleYear, Vehicles.VehicleType vehicleType, Integer seatCapacity, Integer standCapacity) {
         this.vehicleId = vehicleId;
         this.vehicleNumber = vehicleNumber;
         this.vehicleModel = vehicleModel;

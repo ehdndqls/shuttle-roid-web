@@ -18,7 +18,7 @@
         <div class="section-header">
             <h2>정류소 관리</h2>
             <div class="action-buttons">
-                <a href="/busstop/modify/0" id="addBusstopBtn" class="btn btn-primary">
+                <a href="/busstop/modify" id="addBusstopBtn" class="btn btn-primary">
                     <i class="fas fa-plus"></i> 정류소 추가
                 </a>
             </div>
@@ -40,25 +40,29 @@
                         <th>정류소 이름</th>
                         <th>위도</th>
                         <th>경도</th>
-                        <th>민감도(m)</th>
+                        <th>접근(m)</th>
+                        <th>도착(m)</th>
+                        <th>출발(m)</th>
                         <th>관리</th>
                     </tr>
                     </thead>
                     <tbody id="busstopTableBody">
                     <!-- 정류소 데이터 -->
-                    <tr th:each="busstop : ${BusStops}" data-id="${busstop.stopId}">
-                        <td th:text="${busstop.stopId}"></td>
+                    <tr th:each="busstop : ${BusStops}" data-id="${busstop.id.stopId}">
+                        <td th:text="${busstop.id.organizationId} + '-' + ${busstop.id.stopId}"></td>
                         <td th:text="${busstop.stopName}"></td>
                         <td th:text="${busstop.latitude}"></td>
                         <td th:text="${busstop.longitude}"></td>
-                        <td th:text="${busstop.sensitivity}"></td>
+                        <td th:text="${busstop.approach}"></td>
+                        <td th:text="${busstop.arrival}"></td>
+                        <td th:text="${busstop.departure}"></td>
 
                         <!-- 관리 버튼 -->
                         <td class="action-cell">
-                            <a th:href="@{'/busstop/modify/' + ${busstop.stopId}}" class="btn-icon">
+                            <a th:href="@{'/busstop/modify?stopId=' + ${busstop.id.stopId}}" class="btn-icon">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <button class="btn-icon delete-btn" th:data-id="${busstop.stopId}">
+                            <button class="btn-icon delete-btn" th:data-id="${busstop.id.stopId}">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
@@ -105,7 +109,7 @@
                     <div class="map-placeholder" id="map" style="width:500px;height:400px;"></div>
                 </div>
                 <div class="map-info">
-                    <p><i class="fas fa-info-circle"></i> 이거 하다가 뒤질뻔했네 후하후하</p>
+                    <p><i class="fas fa-info-circle"></i> 지도 기준은 현재 순천향대학교이며, 추후 기관의 위치로 설정됩니다.</p>
                 </div>
             </div>
         </div>

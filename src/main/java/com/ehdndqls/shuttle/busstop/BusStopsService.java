@@ -46,7 +46,7 @@ public class BusStopsService {
         busStop.setLatitude(busStopForm.getLatitude());
         busStop.setApproach(busStopForm.getApproach());
         busStop.setArrival(busStopForm.getArrival());
-        busStop.setLeave(busStopForm.getLeave());
+        busStop.setDeparture(busStopForm.getDeparture());
 
         // 저장
         busStopsRepository.save(busStop);
