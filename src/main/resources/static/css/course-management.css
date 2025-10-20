@@ -1,0 +1,480 @@
+/* 코스 관리 페이지 스타일 */
+
+/* 섹션 헤더 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* 버튼 스타일 */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+}
+
+.btn i {
+    margin-right: 0.5rem;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
+/* 검색 및 필터 */
+.search-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.search-box {
+    display: flex;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 0.9rem;
+}
+
+.search-box .search-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0 1rem;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.filter-box {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-box select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: white;
+}
+
+/* 코스 컨테이너 */
+.courses-container {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.courses-table-container {
+    flex: 2;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+}
+
+.course-details-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* 테이블 스타일 */
+.courses-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.courses-table th,
+.courses-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.courses-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.courses-table tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.courses-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.courses-table tbody tr.selected {
+    background-color: #e3f2fd;
+}
+
+/* 코스 ID 스타일 */
+.course-id {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.company-id {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.course-number {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* 코스 이름 스타일 */
+.course-name {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* 상태 배지 스타일 */
+.status-badge {
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    display: inline-block;
+    min-width: 50px;
+}
+
+.status-badge.holiday-yes {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-badge.holiday-no {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* 운행 제한 타입 배지 */
+.route-type-badge {
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+    display: inline-block;
+}
+
+/* 루트 칩 스타일 */
+.route-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.route-chip {
+    background-color: #e1f5fe;
+    color: #0277bd;
+    padding: 0.2rem 0.4rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.no-routes {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+/* 액션 버튼 */
+.action-cell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    color: #6c757d;
+}
+
+.btn-icon:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+.btn-icon.delete-btn:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.btn-icon.view-btn:hover {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.pagination-btn {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #495057;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(.disabled) {
+    background-color: #e9ecef;
+}
+
+.pagination-btn.active {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.pagination-btn.disabled {
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* 상세 정보 카드 */
+.course-details-card,
+.statistics-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.card-header i {
+    margin-right: 0.5rem;
+    color: #3498db;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+/* 선택 안내 */
+.no-selection {
+    text-align: center;
+    color: #6c757d;
+    padding: 2rem 1rem;
+}
+
+.no-selection i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #bdc3c7;
+}
+
+/* 코스 정보 */
+.course-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.info-row.full-width {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 100px;
+}
+
+.info-value {
+    color: #495057;
+    text-align: right;
+}
+
+.info-row.full-width .info-value {
+    text-align: left;
+    margin-top: 0.5rem;
+}
+
+/* 루트 상세 정보 */
+.route-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.route-detail-chip {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 0.3rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.route-detail-chip.unknown {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* 통계 */
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+    .courses-container {
+        flex-direction: column;
+    }
+
+    .course-details-container {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 768px) {
+    .courses-table-container {
+        overflow-x: auto;
+    }
+
+    .courses-table {
+        min-width: 900px;
+        font-size: 0.85rem;
+    }
+
+    .courses-table th,
+    .courses-table td {
+        padding: 0.5rem 0.3rem;
+    }
+
+    .search-filter {
+        flex-direction: column;
+    }
+
+    .filter-box {
+        flex-wrap: wrap;
+    }
+
+    .course-details-container {
+        flex-direction: column;
+    }
+
+    .route-chips {
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .action-buttons {
+        width: 100%;
+    }
+
+    .btn {
+        flex: 1;
+        justify-content: center;
+    }
+}

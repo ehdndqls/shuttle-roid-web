@@ -37,4 +37,11 @@ public interface BusStopsRepository extends JpaRepository<BusStops, BusStopId> {
 
     // 특정 정류소 ID 목록 조회
     List<BusStops> findAllById_OrganizationIdAndId_StopIdIn(Integer organizationId, List<Integer> stopIds);
+
+//    // Route 페이지에서 사용할 stop 데이터 추출
+//    @Query("SELECT new com.ehdndqls.shuttle.routes.RequestStopDto(b.stopName, b.id.stopId) " +
+//            "FROM BusStops b " +
+//            "WHERE b.id.organizationId = :organizationID")
+//    List<RequestStopDto> findStopssForRoute(@Param("organiztionID") Integer organizationId);
+
 }

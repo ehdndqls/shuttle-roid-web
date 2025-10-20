@@ -1,6 +1,5 @@
-package com.ehdndqls.shuttle.dto;
+package com.ehdndqls.shuttle.routes;
 
-import com.ehdndqls.shuttle.routes.Routes;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,21 +11,21 @@ import java.util.stream.Collectors;
 @ToString
 @Getter
 @Setter
-public class RouteForm {
+public class RouteDto {
 
     private Integer routeId;
     private String routeNum;
     private String routeName;
     private Routes.RouteType routeType;
     private String stopList;
-    private String estimatedTime;
+    private Integer estimatedTime;
 
     // 기본 생성자
-    public RouteForm() {
+    public RouteDto() {
     }
 
     // 모든 필드를 사용하는 생성자
-    public RouteForm(Integer routeId, String routeNum, String routeName, Routes.RouteType routeType, String stopList, String estimatedTime) {
+    public RouteDto(Integer routeId, String routeNum, String routeName, Routes.RouteType routeType, String stopList, Integer estimatedTime) {
         this.routeId = routeId;
         this.routeNum = routeNum;
         this.routeName = routeName;

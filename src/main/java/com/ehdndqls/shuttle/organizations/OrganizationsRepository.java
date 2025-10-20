@@ -3,10 +3,13 @@ package com.ehdndqls.shuttle.organizations;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OrganizationsRepository  extends JpaRepository<Organizations, Integer> {
 
     Optional<Organizations> findByOrganizationName(String organizationName);
+
+    List<Integer> findAllOrganizationIdBy();
 }
 

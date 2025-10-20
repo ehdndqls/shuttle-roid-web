@@ -1,16 +1,12 @@
 package com.ehdndqls.shuttle.busstop;
 
 
-import com.ehdndqls.shuttle.drivers.Drivers;
-import com.ehdndqls.shuttle.dto.BusStopForm;
-import com.ehdndqls.shuttle.dto.DriverForm;
 import com.ehdndqls.shuttle.organizations.OrganizationsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +55,7 @@ public class BusStopsController {
     }
 
     @PostMapping("/busstop/modify")
-    public String modifyBusStop(@ModelAttribute BusStopForm busStopForm, Authentication auth) {
+    public String modifyBusStop(@ModelAttribute BusStopDto busStopForm, Authentication auth) {
         Integer organizationId = organizationsService.getOrganizationId(auth);
         busStopsService.modify(busStopForm, organizationId);
         return "redirect:/busstop/page/1";

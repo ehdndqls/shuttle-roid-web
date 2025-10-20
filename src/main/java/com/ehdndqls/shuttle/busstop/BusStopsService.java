@@ -1,6 +1,5 @@
 package com.ehdndqls.shuttle.busstop;
 
-import com.ehdndqls.shuttle.dto.BusStopForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ public class BusStopsService {
 
     private final BusStopsRepository busStopsRepository;
 
-    public void modify(BusStopForm busStopForm, Integer organizationId) {
+    public void modify(BusStopDto busStopForm, Integer organizationId) {
         BusStops busStop;
         BusStopId id = null;
         String stopName;
@@ -22,14 +21,16 @@ public class BusStopsService {
             id = new BusStopId(organizationId, busStopForm.getStopId());
             busStop = busStopsRepository.findById(id).orElse(null);
         }
+
         // 신규 등록 요청
         else{
             busStop = new BusStops();
 
             // ID 생성 via(경유)일 경우 9000 <= stopId , normal 일 경우 stopId < 9000
             Integer stopId;
-            if(busStopForm.getVia()) stopId = getNextNormalStopId(organizationId);
-            else stopId = getNextViaStopId(organizationId);
+            System.out.println(busStopForm.getVia());
+            if(busStopForm.getVia()) stopId = getNextViaStopId(organizationId);
+            else stopId = getNextNormalStopId(organizationId);
 
             id = new BusStopId(organizationId, stopId);
             busStop.setId(id);
@@ -65,6 +66,6 @@ public class BusStopsService {
         return busStopsRepository.findMaxNormalStopIdByOrganizationId(organizationId).map(maxId -> maxId + 1).orElse(1);
     }
     public Integer getNextViaStopId(Integer organizationId) {
-        return busStopsRepository.findMaxViaStopIdByOrganizationId(organizationId).map(maxId -> maxId + 1).orElse(1);
+        return busStopsRepository.findMaxViaStopIdByOrganizationId(organizationId).map(maxId -> maxId + 1).orElse(9001);
     }
 }

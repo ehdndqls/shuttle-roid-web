@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코스 관리 - Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/course-form.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+    <section class="course-form-section">
+        <div class="section-header">
+            <h2 th:text="${courses != null} ? '코스 정보 수정' : '코스 등록'">코스 등록</h2>
+        </div>
+
+        <form id="courseForm" class="course-form" th:action="@{/course/modify}" method="post" th:object="${courseForm}">
+            <input type="hidden" id="courseId" name="courseId" th:value="${courses != null} ? courses.id.courseId : ''" />
+
+            <!-- 기본 정보 -->
+            <div class="form-container">
+                <div class="form-section">
+                    <h3>기본 정보</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">코스명</label>
+                            <input type="text" id="name" name="name" th:value="${courses != null} ? courses.courseName : ''" required placeholder="예: 순환1" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="holidayServiceAvailable">공휴일 운행</label>
+                            <select id="holidayServiceAvailable" name="holidayServiceAvailable">
+                                <option value="true" th:selected="${courses != null} ? courses.holidayServiceAvailable : false">운행</option>
+                                <option value="false" th:selected="${courses != null} ? !courses.holidayServiceAvailable : true">미운행</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="routeType">운행 제한 타입</label>
+                            <select id="routeType" name="routeType">
+                                <option value="NONE" th:selected="${courses == null or courses.routeType.name() == 'NONE'}">제한 없음</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 운행 스케줄 -->
+            <div class="form-container">
+                <div class="form-section">
+                    <div class="section-title-row">
+                        <h3>운행 스케줄</h3>
+                        <div class="schedule-actions">
+                            <button type="button" id="addRouteBtn" class="btn btn-secondary">
+                                <i class="fas fa-route"></i> 노선 추가
+                            </button>
+                            <button type="button" id="addRestBtn" class="btn btn-outline">
+                                <i class="fas fa-coffee"></i> 휴식 추가
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 휴식은 routeId를 0으로 설정 -->
+                    <div class="schedule-info">
+                        <p><i class="fas fa-info-circle"></i> 출발 시간 순서대로 운행 스케줄을 추가해주세요.</p>
+                    </div>
+
+                    <div class="schedule-table-container">
+                        <table class="schedule-table">
+                            <thead>
+                            <tr>
+                                <th>순서</th>
+                                <th>출발 시간</th>
+                                <th>노선</th>
+                                <th>도착 시간</th>
+                                <th>관리</th>
+                            </tr>
+                            </thead>
+                            <tbody id="scheduleTableBody">
+                            <!-- 스케줄 항목들이 여기에 동적으로 추가됨 -->
+                            </tbody>
+                        </table>
+
+                        <div class="empty-schedule" id="emptySchedule">
+                            <i class="fas fa-calendar-plus"></i>
+                            <p>운행 스케줄을 추가해주세요</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 사용 가능한 노선 목록 -->
+            <div class="form-container">
+                <div class="form-section">
+                    <h3>사용 가능한 노선 목록</h3>
+                    <div class="routes-grid" id="routesGrid">
+                        <div class="route-card" th:each="route : ${routes}">
+                            <div class="route-card-header">
+                                <span class="route-id" th:text="'노선 ' + ${route.routeId}">노선 102</span>
+                            </div>
+                            <div class="route-card-body">
+                                <h4 th:text="${route.routeName}">순천향대-아산역</h4>
+                                <p class="route-time" th:text="'소요시간: ' + ${route.estimatedTime} + '분'">소요시간: 8분</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="location.href='/course'">취소</button>
+                <button type="submit" class="btn btn-primary" th:text="${courses != null} ? '수정하기' : '등록하기'">등록하기</button>
+            </div>
+        </form>
+    </section>
+
+    <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+<footer th:replace="~{ footer.html::footer }"></footer>
+
+<!-- 서버 데이터를 JS로 전달 -->
+<script th:inline="javascript">
+    let existingRouteList = /*[[${courses?.routeList}]]*/ [];
+    let availableRoutes = /*[[${routes}]]*/ [];
+    console.log("기존 루트 리스트:", existingRouteList);
+    console.log("사용 가능한 노선:", availableRoutes);
+</script>
+
+<script>
+    let scheduleCounter = 0;
+    let scheduleItems = [];
+
+    // 페이지 로드 시 기존 데이터 로드
+    document.addEventListener('DOMContentLoaded', function () {
+        // 기존 루트 리스트가 있으면 로드
+        if (existingRouteList && Array.isArray(existingRouteList)) {
+            existingRouteList.forEach(routeDetail => {
+                addScheduleItem(routeDetail);
+            });
+        }
+
+        updateScheduleDisplay();
+    });
+
+    // 노선 추가 버튼
+    document.getElementById('addRouteBtn').addEventListener('click', function () {
+        addScheduleItem({ routeId: null, startTime: '', endTime: '' });
+    });
+
+    // 휴식 추가 버튼
+    document.getElementById('addRestBtn').addEventListener('click', function () {
+        addScheduleItem({ routeId: 0, startTime: '', endTime: '' });
+    });
+
+    // 스케줄 항목 추가
+    function addScheduleItem(routeDetail = {}) {
+        const item = {
+            id: scheduleCounter++,
+            routeId: routeDetail.routeId, // null 또는 0 또는 실제 routeId
+            startTime: routeDetail.startTime ?? '',
+            endTime: routeDetail.endTime ?? '',
+            restMinutes: routeDetail.restMinutes ?? (routeDetail.routeId === 0 ? 10 : 0)
+        };
+
+        scheduleItems.push(item);
+        updateScheduleDisplay();
+    }
+
+
+    // 스케줄 항목 제거
+    function removeScheduleItem(id) {
+        scheduleItems = scheduleItems.filter(item => item.id !== id);
+        updateScheduleDisplay();
+    }
+
+    // 노선 선택 또는 출발 시간 변경 시 endTime 자동 계산
+    function updateScheduleItem(id, field, value) {
+        const item = scheduleItems.find(item => item.id === id);
+        if (!item) return;
+
+        item[field] = value;
+
+        const isRest = item.routeId == 0;
+
+        if (isRest) {
+            // 휴식이면 restMinutes로 endTime 계산
+            updateRestTime(id, item.restMinutes || 10);
+        } else {
+            // 노선이면 estimatedTime으로 endTime 계산
+            const route = availableRoutes.find(r => r.routeId == item.routeId);
+            if (route && route.estimatedTime != null && item.startTime) {
+                const [hours, minutes] = item.startTime.split(':').map(Number);
+                const date = new Date();
+                date.setHours(hours, minutes, 0, 0);
+                date.setMinutes(date.getMinutes() + parseInt(route.estimatedTime, 10));
+
+                const endHours = String(date.getHours()).padStart(2, '0');
+                const endMinutes = String(date.getMinutes()).padStart(2, '0');
+                item.endTime = `${endHours}:${endMinutes}`;
+            }
+        }
+
+        updateScheduleDisplay();
+    }
+
+    // 출발시간 + estimatedTime → 도착시간 계산
+    function calculateArrivalTime(id) {
+        const item = scheduleItems.find(item => item.id === id);
+        if (!item || !item.routeId || item.routeId == 0) return;
+
+        const route = availableRoutes.find(r => r.routeId == item.routeId);
+        if (!route || route.estimatedTime == null) return;
+
+        if (item.startTime) {
+            const [hours, minutes] = item.startTime.split(':').map(Number);
+            const startDate = new Date();
+            startDate.setHours(hours);
+            startDate.setMinutes(minutes);
+            startDate.setSeconds(0);
+
+            // estimatedTime(분)을 더함
+            startDate.setMinutes(startDate.getMinutes() + parseInt(route.estimatedTime, 10));
+
+            const endHours = String(startDate.getHours()).padStart(2, '0');
+            const endMinutes = String(startDate.getMinutes()).padStart(2, '0');
+            item.endTime = `${endHours}:${endMinutes}`;
+        }
+    }
+
+    // 항목 순서 이동 (위/아래)
+    function moveScheduleItem(id, direction) {
+        const index = scheduleItems.findIndex(item => item.id === id);
+        if (index === -1) return;
+
+        if (direction === 'up' && index > 0) {
+            [scheduleItems[index], scheduleItems[index - 1]] = [scheduleItems[index - 1], scheduleItems[index]];
+        } else if (direction === 'down' && index < scheduleItems.length - 1) {
+            [scheduleItems[index], scheduleItems[index + 1]] = [scheduleItems[index + 1], scheduleItems[index]];
+        }
+
+        updateScheduleDisplay();
+    }
+
+    // 테이블 갱신
+    function updateScheduleDisplay() {
+        const tbody = document.getElementById('scheduleTableBody');
+        const emptySchedule = document.getElementById('emptySchedule');
+
+        if (scheduleItems.length === 0) {
+            tbody.innerHTML = '';
+            emptySchedule.style.display = 'block';
+            return;
+        }
+
+        emptySchedule.style.display = 'none';
+
+        tbody.innerHTML = scheduleItems.map((item, index) => {
+            const isRest = item.routeId === 0;
+            const route = isRest ? null : availableRoutes.find(r => r.routeId == item.routeId);
+
+            return `
+            <tr class="${isRest ? 'rest-row' : ''}">
+                <td class="order-cell">
+                    <span class="order-number">${index + 1}</span>
+                    <div class="order-actions">
+                        <button type="button" class="btn-mini" onclick="moveScheduleItem(${item.id}, 'up')" ${index === 0 ? 'disabled' : ''}>
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <button type="button" class="btn-mini" onclick="moveScheduleItem(${item.id}, 'down')" ${index === scheduleItems.length - 1 ? 'disabled' : ''}>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </td>
+                <td>
+                    <input type="time"
+                           class="time-input"
+                           name="routeList[${index}].startTime"
+                           value="${item.startTime}"
+                           onchange="updateScheduleItem(${item.id}, 'startTime', this.value)"
+                           required />
+                </td>
+                <td>
+                    ${isRest ? `
+                        <input type="hidden" name="routeList[${index}].routeId" value="0" />
+                        <input type="number" min="1" max="60"
+                               value="${item.restMinutes || 10}"
+                               onchange="updateRestTime(${item.id}, this.value)" /> 분
+                        <span class="rest-badge"><i class="fas fa-coffee"></i> 휴식</span>
+                    ` : `
+                        <select class="route-select"
+                                name="routeList[${index}].routeId"
+                                onchange="updateScheduleItem(${item.id}, 'routeId', this.value)"
+                                required>
+                            <option value="">노선 선택</option>
+                            ${availableRoutes.map(r => `
+                                <option value="${r.routeId}" ${r.routeId == item.routeId ? 'selected' : ''}>
+                                    ${r.routeId} - ${r.routeName} (${r.estimatedTime}분)
+                                </option>
+                            `).join('')}
+                        </select>
+                         <input type="hidden" name="routeList[${index}].routeName" value="${route ? route.routeName : ''}" />
+                         <input type="hidden" name="routeList[${index}].estimatedTime" value="${route ? route.estimatedTime : ''}" />
+                    `}
+                </td>
+                <td>
+                    <input type="time"
+                           class="time-input"
+                           name="routeList[${index}].endTime"
+                           value="${item.endTime}"
+                           readonly />
+                </td>
+                <td class="action-cell">
+                    <button type="button" class="btn-icon delete-btn" onclick="removeScheduleItem(${item.id})">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+        }).join('');
+
+    }
+
+    // 휴식 시간 변경 시 호출
+    function updateRestTime(id, minutes) {
+        const item = scheduleItems.find(item => item.id === id);
+        item.restMinutes = parseInt(minutes, 10) || 10;
+
+        // endTime 계산
+        if (item.startTime) {
+            const [hours, mins] = item.startTime.split(':').map(Number);
+            const date = new Date();
+            date.setHours(hours, mins, 0, 0);
+            date.setMinutes(date.getMinutes() + item.restMinutes);
+
+            const endHours = String(date.getHours()).padStart(2, '0');
+            const endMinutes = String(date.getMinutes()).padStart(2, '0');
+            item.endTime = `${endHours}:${endMinutes}`;
+        }
+
+        updateScheduleDisplay();
+    }
+
+    // 폼 제출 전 유효성 검사
+    document.getElementById('courseForm').addEventListener('submit', function (e) {
+        if (scheduleItems.length === 0) {
+            e.preventDefault();
+            alert('최소 1개 이상의 운행 스케줄을 추가해주세요.');
+            return false;
+        }
+
+        // 시간 순서 검증
+        for (let i = 0; i < scheduleItems.length - 1; i++) {
+            const current = scheduleItems[i];
+            const next = scheduleItems[i + 1];
+
+            if (current.startTime >= next.startTime) {
+                e.preventDefault();
+                alert(`스케줄 ${i + 1}번과 ${i + 2}번의 시간 순서를 확인해주세요.`);
+                return false;
+            }
+        }
+
+        return true;
+    });
+</script>
+
+
+</body>
+</html>

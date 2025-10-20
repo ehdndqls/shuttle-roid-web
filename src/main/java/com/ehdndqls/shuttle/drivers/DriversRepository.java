@@ -15,14 +15,14 @@ public interface  DriversRepository extends JpaRepository<Drivers, Integer> {
 
 
     @Query("SELECT d FROM Drivers d WHERE " +
-            "(:searchText IS NULL OR d.driverName LIKE %:searchText% OR CAST(d.driverId AS string) = :searchText) AND " +
-            "(:type IS NULL OR d.type = :type) AND " +
-            "(:joinYear IS NULL OR (:joinYear = 2021 AND d.joinYear <= 2021) OR d.joinYear = :joinYear) AND " +
+            "(:searchText IS NULL OR d.driverName LIKE %:searchText% OR CAST(d.employeeNumber AS string) = :searchText) AND " +
+            "(:type IS NULL OR d.employmentType = :type) AND " +
+            "(:joinYear IS NULL OR d.active) AND " +
             "(:organizationId IS NULL OR d.organizationId = :organizationId)")
     List<Drivers> searchDrivers(
             @Param("searchText") String searchText,
-            @Param("type") Drivers.DriverType type,
-            @Param("joinYear") Integer joinYear,
+            @Param("type") Drivers.EmploymentType type,
+            @Param("active") Boolean active,
             @Param("organizationId") Integer organizationId
     );
 

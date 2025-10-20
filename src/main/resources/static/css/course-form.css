@@ -1,0 +1,482 @@
+/* 코스 등록/수정 폼 스타일 */
+
+/* 섹션 헤더 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+/* 폼 컨테이너 */
+.form-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* 폼 섹션 */
+.form-section {
+    margin-bottom: 0;
+}
+
+.form-section h3 {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.section-title-row h3 {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.schedule-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* 폼 그리드 레이아웃 */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+/* 폼 그룹 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* 버튼 스타일 */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
+.btn-outline {
+    background-color: white;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.btn-outline:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+/* 스케줄 정보 */
+.schedule-info {
+    background-color: #e3f2fd;
+    padding: 0.8rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.schedule-info i {
+    color: #1976d2;
+}
+
+.schedule-info p {
+    margin: 0;
+    color: #1565c0;
+    font-size: 0.9rem;
+}
+
+/* 스케줄 테이블 */
+.schedule-table-container {
+    position: relative;
+    min-height: 200px;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.schedule-table thead {
+    background-color: #f8f9fa;
+}
+
+.schedule-table th {
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.schedule-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.schedule-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.schedule-table tbody tr.rest-row {
+    background-color: #fff3cd;
+}
+
+.schedule-table tbody tr.rest-row:hover {
+    background-color: #ffe69c;
+}
+
+/* 순서 셀 */
+.order-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.order-number {
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 20px;
+}
+
+.order-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.btn-mini {
+    background: none;
+    border: 1px solid #dee2e6;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 0.1rem 0.3rem;
+    color: #6c757d;
+    font-size: 0.7rem;
+    transition: all 0.2s;
+}
+
+.btn-mini:hover:not(:disabled) {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.btn-mini:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* 입력 필드 */
+.time-input {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    width: 100px;
+}
+
+.time-input:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.route-select {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background-color: white;
+    min-width: 200px;
+}
+
+.route-select:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+/* 배지 */
+.rest-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.8rem;
+    background-color: #fff3cd;
+    color: #856404;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.type-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.type-badge.rest {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.type-badge.route {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+/* 액션 버튼 */
+.action-cell {
+    text-align: center;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    color: #6c757d;
+}
+
+.btn-icon:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+.btn-icon.delete-btn:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* 빈 스케줄 */
+.empty-schedule {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
+
+.empty-schedule i {
+    font-size: 2.5rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+}
+
+.empty-schedule p {
+    margin: 0;
+}
+
+/* 노선 그리드 */
+.routes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.route-card {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.2s;
+}
+
+.route-card:hover {
+    border-color: #3498db;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+}
+
+.route-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.route-id {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.route-type-badge {
+    padding: 0.2rem 0.5rem;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.route-card-body h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: #2c3e50;
+}
+
+.route-time {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* 폼 액션 버튼 */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.form-actions .btn {
+    min-width: 100px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 992px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .routes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .section-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .schedule-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .schedule-table {
+        font-size: 0.85rem;
+    }
+
+    .schedule-table th,
+    .schedule-table td {
+        padding: 0.5rem 0.3rem;
+    }
+
+    .time-input {
+        width: 80px;
+        font-size: 0.8rem;
+    }
+
+    .route-select {
+        min-width: 150px;
+        font-size: 0.8rem;
+    }
+
+    .order-actions {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    .routes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .schedule-table-container {
+        overflow-x: auto;
+    }
+
+    .schedule-table {
+        min-width: 600px;
+    }
+}

@@ -86,14 +86,14 @@
                     <a class="pagination-btn"
                        th:each="i : ${#numbers.sequence(1, totalPages)}"
                        th:classappend="${i == currentPage} ? ' active' : ''"
-                       th:href="@{/vehicle/page/{page}(page=${i})}">
+                       th:href="@{/busstop/page/{page}(page=${i})}">
                         <span th:text="${i}">1</span>
                     </a>
 
                     <!-- 다음 페이지 버튼 -->
                     <a class="pagination-btn"
                        th:classappend="${currentPage == totalPages} ? ' disabled' : ''"
-                       th:href="@{/vehicle/page/{page}(page=${currentPage + 1})}"
+                       th:href="@{/busstop/page/{page}(page=${currentPage + 1})}"
                        th:if="${currentPage < totalPages}">
                         <i class="fas fa-chevron-right"></i>
                     </a>

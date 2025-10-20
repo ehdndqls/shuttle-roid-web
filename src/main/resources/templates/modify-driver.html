@@ -24,21 +24,30 @@
             <input type="hidden" id="id" name="id" th:value="${driver != null} ? ${driver.driverId} : ''" required />
 
           <div class="form-group">
+            <label for="employeeNumber">사원번호</label>
+            <input type="text" id="employeeNumber" name="employeeNumber" th:value="${driver != null} ? ${driver.employeeNumber} : ''" required />
+          </div>
+
+          <div class="form-group">
             <label for="driverName">이름</label>
             <input type="text" id="driverName" name="driverName" th:value="${driver != null} ? ${driver.driverName} : ''" required />
           </div>
 
           <div class="form-group">
-            <label for="joinYear">입사년도</label>
-            <input type="number" id="joinYear" name="joinYear" min="2000" th:value="${driver != null} ? ${driver.joinYear} : ''" required />
+            <label for="phoneNumber">연락처</label>
+            <input type="number" id="phoneNumber" name="phoneNumber" th:value="${driver != null} ? ${driver.phoneNumber} : ''" required />
           </div>
 
           <div class="form-group">
-            <label for="type">운전 타입</label>
-            <select id="type" name="type">
-              <option value="Standard" th:selected="${driver != null} ? ${driver.type.name()} == 'Standard' : false">일반</option>
-              <option value="Special" th:selected="${driver != null} ? ${driver.type.name()} == 'Special' : false">특수</option>
-              <option value="Large" th:selected="${driver != null} ? ${driver.type.name()} == 'Large' : false">대형</option>
+            <label for="ssnFront">주민번호 앞자리</label>
+            <input type="number" id="ssnFront" name="ssnFront" th:value="${driver != null} ? ${driver.ssnFront} : ''" required />
+          </div>
+
+          <div class="form-group">
+            <label for="employmentType">운전 타입</label>
+            <select id="employmentType" name="employmentType">
+              <option value="Regular" th:selected="${driver != null} ? ${driver.employmentType.name()} == 'Regular' : false">정규</option>
+              <option value="Contract" th:selected="${driver != null} ? ${driver.employmentType.name()} == 'Contract' : false">계약</option>
             </select>
           </div>
 

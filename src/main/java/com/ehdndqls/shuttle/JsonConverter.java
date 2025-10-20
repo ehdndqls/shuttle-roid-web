@@ -1,4 +1,4 @@
-package com.ehdndqls.shuttle.routes;
+package com.ehdndqls.shuttle;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -14,14 +14,14 @@ import java.util.List;
  * 실제 DB에는 JSON형태의 문자열로 저장되나 엔티티에선 List<Integer>로 자유롭게 사용할 수 있도록 해주는 역할
  */
 @Converter
-public class StopsConverter implements AttributeConverter<List<Integer>, String> {
+public class JsonConverter implements AttributeConverter<List<Integer>, String> {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(List<Integer> stopList) {
+    public String convertToDatabaseColumn(List<Integer> attribute) {
         try {
-            return objectMapper.writeValueAsString(stopList);
+            return objectMapper.writeValueAsString(attribute);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to convert stops list to JSON string.", e);
         }

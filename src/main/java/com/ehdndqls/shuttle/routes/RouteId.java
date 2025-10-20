@@ -1,4 +1,4 @@
-package com.ehdndqls.shuttle.busstop;
+package com.ehdndqls.shuttle.routes;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

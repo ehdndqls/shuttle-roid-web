@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코스 관리 - Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/course-management.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+    <section class="courses-management">
+        <div class="section-header">
+            <h2>코스 관리</h2>
+            <div class="action-buttons">
+                <a href="/course/modify?courseId=0" id="addCourseBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> 코스 추가
+                </a>
+            </div>
+        </div>
+
+        <form id="searchForm" action="/course/search" method="get" class="search-filter">
+            <div class="search-box">
+                <input type="text" id="searchInput" name="searchText" placeholder="코스 이름으로 검색">
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-box">
+                <select id="routeTypeFilter" name="routeType">
+                    <option value="">전체 운행 제한 타입</option>
+                    <option value="NONE">제한 없음</option>
+                </select>
+                <select id="holidayFilter" name="holidayService">
+                    <option value="">전체 공휴일 운행</option>
+                    <option value="true">운행</option>
+                    <option value="false">미운행</option>
+                </select>
+            </div>
+        </form>
+
+        <div class="courses-container">
+            <div class="courses-table-container">
+                <table class="courses-table">
+                    <thead>
+                    <tr>
+                        <th>코스 ID</th>
+                        <th>코스 이름</th>
+                        <th>공휴일 운행</th>
+                        <th>운행 제한 타입</th>
+                        <th>포함 루트 수</th>
+                        <th>관리</th>
+                    </tr>
+                    </thead>
+                    <tbody id="coursesTableBody">
+                    <tr th:each="course : ${Courses}" th:attr="data-course-id=${course.id.courseId}, data-organization-id=${course.id.organizationId}">
+                        <td>
+                                <span class="course-id" th:text="${course.id.organizationId + '-' + course.id.courseId}"></span>
+                        </td>
+                        <td class="course-name" th:text="${course.courseName}"></td>
+                        <td>
+                            <span class="status-badge" th:classappend="${course.holidayServiceAvailable} ? ' holiday-yes' : ' holiday-no'"
+                                  th:text="${course.holidayServiceAvailable} ? '운행' : '미운행'">운행</span>
+                        </td>
+                        <td>
+                            <span class="route-type-badge" th:text="${course.routeType.name()}">NONE</span>
+                        </td>
+                        <td class="route-count" th:text="${course.routeList != null} ? ${#lists.size(course.routeList)} : 0">0</td>
+<!--                        <td class="route-list">-->
+<!--                            <div class="route-chips" th:if="${course.routeList != null and not #lists.isEmpty(course.routeList)}">-->
+<!--                                <span class="route-chip" th:each="routeId : ${course.routeList}" th:text="'R' + ${routeId}">R1</span>-->
+<!--                            </div>-->
+<!--                            <span class="no-routes" th:if="${course.routeList == null or #lists.isEmpty(course.routeList)}">루트 없음</span>-->
+<!--                        </td>-->
+                        <td class="action-cell">
+                            <a th:href="@{'/courses/modify?courseId=' + ${course.id.courseId}}" class="btn-icon" title="수정">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button class="btn-icon delete-btn" th:attr="data-organization-id=${course.id.organizationId}, data-course-id=${course.id.courseId}" title="삭제">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <button class="btn-icon view-btn" th:attr="data-organization-id=${course.id.organizationId}, data-course-id=${course.id.courseId}" title="상세보기">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination" th:if="${totalPages > 1}">
+                    <a class="pagination-btn"
+                       th:classappend="${currentPage == 1} ? ' disabled' : ''"
+                       th:href="@{/courses/page/{page}(page=${currentPage - 1})}"
+                       th:if="${currentPage > 1}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <span class="pagination-btn disabled" th:if="${currentPage == 1}">
+                        <i class="fas fa-chevron-left"></i>
+                    </span>
+
+                    <a class="pagination-btn"
+                       th:each="i : ${#numbers.sequence(1, totalPages)}"
+                       th:classappend="${i == currentPage} ? ' active' : ''"
+                       th:href="@{/courses/page/{page}(page=${i})}">
+                        <span th:text="${i}">1</span>
+                    </a>
+
+                    <a class="pagination-btn"
+                       th:classappend="${currentPage == totalPages} ? ' disabled' : ''"
+                       th:href="@{/courses/page/{page}(page=${currentPage + 1})}"
+                       th:if="${currentPage < totalPages}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <span class="pagination-btn disabled" th:if="${currentPage == totalPages}">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="course-details-container">
+                <div class="course-details-card" id="courseDetailsCard">
+                    <div class="card-header">
+                        <h3><i class="fas fa-route"></i> 코스 상세 정보</h3>
+                    </div>
+                    <div class="card-body" id="courseDetailsBody">
+                        <div class="no-selection">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <p>코스를 선택하여 상세 정보를 확인하세요</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="statistics-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-bar"></i> 코스 통계</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="stat-item">
+                            <span class="stat-label">전체 코스 수</span>
+                            <span class="stat-value" th:text="${totalCourses}">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">공휴일 운행 코스</span>
+                            <span class="stat-value" th:text="${holidayCourses}">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">평균 루트 수</span>
+                            <span class="stat-value" id="avgRouteCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+<footer th:replace="~{ footer.html::footer }"></footer>
+
+<script th:inline="javascript">
+    // 서버에서 전달된 courses 데이터
+    let coursesPage = /*[[${Courses}]]*/ {};
+    let courses = coursesPage.content || [];
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // ------------------------
+        // 코스 통계 계산
+        // ------------------------
+        function calculateAverageRouteCount() {
+            if (!courses.length) return 0;
+            const totalRoutes = courses.reduce((sum, c) => sum + (c.routeList ? c.routeList.length : 0), 0);
+            return (totalRoutes / courses.length).toFixed(1);
+        }
+
+        function updateCourseStatistics() {
+            const totalElem = document.querySelector('.stat-value[th\\:text="${totalCourses}"]');
+            const holidayElem = document.querySelector('.stat-value[th\\:text="${holidayCourses}"]');
+            const avgElem = document.getElementById('avgRouteCount');
+
+            if (totalElem) totalElem.textContent = courses.length;
+            if (holidayElem) {
+                const holidayCount = courses.filter(c => c.holidayServiceAvailable).length;
+                holidayElem.textContent = holidayCount;
+            }
+            if (avgElem) avgElem.textContent = calculateAverageRouteCount();
+        }
+
+        updateCourseStatistics();
+
+        // ------------------------
+        // 삭제 버튼 이벤트
+        // ------------------------
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const courseId = this.getAttribute('data-course-id');
+                if (confirm('정말 삭제하시겠습니까?')) {
+                    fetch(`/courses/delete?courseId=${courseId}`, { method: 'DELETE' })
+                        .then(r => {
+                            if (!r.ok) throw new Error('삭제 실패');
+                            alert('삭제되었습니다.');
+                            location.reload();
+                        })
+                        .catch(e => { console.error(e); alert('삭제 중 오류 발생'); });
+                }
+            });
+        });
+
+        // ------------------------
+        // 코스 상세보기
+        // ------------------------
+        function showCourseDetails(organizationId, courseId) {
+            const course = courses.find(c => c.id.organizationId == organizationId && c.id.courseId == courseId);
+            if (!course) return;
+
+            const detailsBody = document.getElementById('courseDetailsBody');
+            if (!detailsBody) return;
+
+            const routeRows = course.routeList && Array.isArray(course.routeList)
+                ? course.routeList.map(r => {
+                    // 출발시간
+                    const startTime = r.startTime ? r.startTime.slice(0,5) : '--:--';
+                    // 도착시간 계산
+                    let endTime = '--:--';
+                    if (r.startTime && r.estimatedTime != null) {
+                        const [h, m] = r.startTime.split(':').map(Number);
+                        const d = new Date();
+                        d.setHours(h, m, 0, 0);
+                        d.setMinutes(d.getMinutes() + r.estimatedTime);
+                        endTime = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                    }
+                    const routeName = r.routeId === 0 ? '휴식' : (r.routeName || '노선 이름 없음');
+
+                    return `<tr>
+                            <td>${startTime}</td>
+                            <td>${routeName}</td>
+                            <td>${endTime}</td>
+                        </tr>`;
+                }).join('')
+                : `<tr><td colspan="3">포함된 루트가 없습니다</td></tr>`;
+
+            detailsBody.innerHTML = `
+        <div class="course-info">
+            <h3>${course.courseName}</h3>
+            <table class="route-schedule">
+                <thead>
+                    <tr>
+                        <th>출발</th>
+                        <th>노선 이름</th>
+                        <th>도착</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${routeRows}
+                </tbody>
+            </table>
+        </div>`;
+        }
+
+        // ------------------------
+        // 테이블 행 클릭 이벤트
+        // ------------------------
+        document.querySelectorAll('.courses-table tbody tr').forEach(row => {
+            row.addEventListener('click', function(e) {
+                if (e.target.closest('.btn-icon')) return;
+                const organizationId = row.getAttribute('data-organization-id');
+                const courseId = row.getAttribute('data-course-id');
+                document.querySelectorAll('.courses-table tbody tr').forEach(tr => tr.classList.remove('selected'));
+                row.classList.add('selected');
+                showCourseDetails(organizationId, courseId);
+            });
+        });
+
+        // ------------------------
+        // 상세보기 버튼 클릭 이벤트
+        // ------------------------
+        document.querySelectorAll('.view-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const row = this.closest('tr');
+                const organizationId = row.getAttribute('data-organization-id');
+                const courseId = row.getAttribute('data-course-id');
+                document.querySelectorAll('.courses-table tbody tr').forEach(tr => tr.classList.remove('selected'));
+                row.classList.add('selected');
+                showCourseDetails(organizationId, courseId);
+            });
+        });
+
+        // ------------------------
+        // 필터 이벤트
+        // ------------------------
+        const routeTypeFilter = document.getElementById('routeTypeFilter');
+        const holidayFilter = document.getElementById('holidayFilter');
+        function filterCourses() {
+            const typeVal = routeTypeFilter?.value;
+            const holidayVal = holidayFilter?.value;
+            document.querySelectorAll('.courses-table tbody tr').forEach(row => {
+                let show = true;
+                if (typeVal) {
+                    const badge = row.querySelector('.route-type-badge');
+                    if (badge && badge.textContent.trim() !== typeVal) show = false;
+                }
+                if (holidayVal) {
+                    const badge = row.querySelector('.status-badge');
+                    const isHoliday = badge?.classList.contains('holiday-yes');
+                    if ((holidayVal === 'true' && !isHoliday) || (holidayVal === 'false' && isHoliday)) show = false;
+                }
+                row.style.display = show ? '' : 'none';
+            });
+        }
+        if (routeTypeFilter) routeTypeFilter.addEventListener('change', filterCourses);
+        if (holidayFilter) holidayFilter.addEventListener('change', filterCourses);
+
+        // ------------------------
+        // 날짜/시간 표시
+        // ------------------------
+        function updateDateTime() {
+            const now = new Date();
+            const options = { year:'numeric', month:'long', day:'numeric', weekday:'long', hour:'2-digit', minute:'2-digit' };
+            const datetimeElement = document.getElementById('datetime');
+            if (datetimeElement) datetimeElement.textContent = now.toLocaleDateString('ko-KR', options);
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+
+    });
+</script>
+
+
+
+</body>
+</html>

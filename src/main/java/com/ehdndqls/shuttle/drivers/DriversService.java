@@ -1,9 +1,6 @@
 package com.ehdndqls.shuttle.drivers;
 
 
-import com.ehdndqls.shuttle.dto.DriverForm;
-import com.ehdndqls.shuttle.organizations.OrganizationUserDetails;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -17,7 +14,7 @@ public class DriversService {
         this.driversRepository = driversRepository;
     }
 
-    public void modify(DriverForm driverForm, Integer organizationId) {
+    public void modify(DriverDto driverForm, Integer organizationId) {
         Drivers driver;
         // 신균지 중곤지 확인
         if(driverForm.getId() != null) {
@@ -29,9 +26,11 @@ public class DriversService {
 
         // 값 설정
         driver.setDriverName(driverForm.getDriverName());
+        driver.setPhoneNumber(driverForm.getPhoneNumber());
         driver.setActive(driverForm.getActive());
-        driver.setType(driverForm.getType());
-        driver.setJoinYear(driverForm.getJoinYear());
+        driver.setEmployeeNumber(driverForm.getEmployeeNumber());
+        driver.setEmploymentType(driverForm.getEmploymentType());
+        driver.setSsnFront(driverForm.getSsnFront());
         
         driver.setOrganizationId(organizationId);
 
@@ -39,10 +38,10 @@ public class DriversService {
         driversRepository.save(driver);
     }
 
-    public List<Drivers> search(String searchText, Drivers.DriverType type, Integer joinYear, Integer organizationId) {
+    public List<Drivers> search(String searchText, Boolean active, Drivers.EmploymentType type, Integer organizationId) {
         if (searchText != null && searchText.isBlank()) {
             searchText = null;
         }
-        return driversRepository.searchDrivers(searchText, type, joinYear, organizationId);
+        return driversRepository.searchDrivers(searchText, type, active, organizationId);
     }
 }

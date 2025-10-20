@@ -27,7 +27,7 @@
  */
 package com.ehdndqls.shuttle.routes;
 
-import com.ehdndqls.shuttle.busstop.RouteId;
+import com.ehdndqls.shuttle.JsonConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,14 +44,14 @@ public class Routes {
     private RouteId id;   // 기본키 -> 복합키: organizationId + routeId
     private String routeNum;
     private String routeName;   // 노선 이름
-    private String estimatedTime; // 예정 소요 시간
+    private Integer estimatedTime; // 예정 소요 시간
 
     @Enumerated(EnumType.STRING)
     private RouteType routeType;
 
-    @Convert(converter = StopsConverter.class)
+    @Convert(converter = StopDetailListConverter.class)
     @Column(columnDefinition = "json")
-    private List<Integer> stopList; // 정류소 ID 목록
+    private List<StopDetail> stopList; // 정류소 ID 목록
 
 
     @Getter
@@ -69,10 +69,4 @@ public class Routes {
 
     }
 
-    /*
-    public enum VehicleType {
-        Standard,   // 일반
-        Special,    // 특수
-        Large   // 대형
-    }*/
 }

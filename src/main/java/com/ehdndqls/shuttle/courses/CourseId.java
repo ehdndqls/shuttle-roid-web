@@ -1,4 +1,4 @@
-package com.ehdndqls.shuttle.busstop;
+package com.ehdndqls.shuttle.courses;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,7 @@ import java.io.Serializable;
 @Data   // Getter, Setter, ToString, Equals, HashCode
 @NoArgsConstructor  // JPA에서 사용하기 위한 tag
 @AllArgsConstructor
-public class EstimatedTimeId implements Serializable {
-    private Integer departureStop;
-    private Integer arrivalStop;
+public class CourseId implements Serializable {
     private Integer organizationId;
+    private Integer courseId;
 }

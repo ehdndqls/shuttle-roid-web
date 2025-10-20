@@ -20,7 +20,7 @@
         </div>
         <div class="form-container">
             <form id="routeForm" class="route-form" th:action="@{/routes/modify}" method="post" th:object="${routeForm}">
-                <input type="hidden" id="routeId" name="routeId" th:value="${route != null} ? ${route.routeId} : ''" />
+                <input type="hidden" id="routeId" name="routeId" th:value="${route != null} ? ${route.id.routeId} : ''" />
 
                 <div class="form-section">
                     <h3>기본 정보</h3>
@@ -29,6 +29,17 @@
                             <label for="routeName">노선 이름</label>
                             <input type="text" id="routeName" name="routeName" th:value="${route != null} ? ${route.routeName} : ''" required placeholder="예: 순천향대 순환노선" />
                         </div>
+
+                        <div class="form-group">
+                            <label for="routeNum">노선 번호</label>
+                            <input type="text" id="routeNum" name="routeNum" th:value="${route != null} ? ${route.routeNum} : ''" required placeholder="예: 720-3" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="estimatedTime">총 소요시간</label>
+                            <input type="text" id="estimatedTime" name="estimatedTime" th:value="${route != null} ? ${route.estimatedTime} : ''" required placeholder="예: 1시간30분 -> 90(분 단위)" />
+                        </div>
+
 
                         <div class="form-group">
                             <label for="routeType">노선 타입</label>
@@ -40,23 +51,23 @@
                             </select>
                         </div>
 
-                        <div class="form-group">
-                            <label for="holidayService">휴일 운행</label>
-                            <select id="holidayService" name="holidayService">
-                                <option value="false" th:selected="${route != null} ? !${route.holidayService} : true">미운행</option>
-                                <option value="true" th:selected="${route != null} ? ${route.holidayService} : false">운행</option>
-                            </select>
-                        </div>
+<!--                        <div class="form-group">-->
+<!--                            <label for="holidayService">휴일 운행</label>-->
+<!--                            <select id="holidayService" name="holidayService">-->
+<!--                                <option value="false" th:selected="${route != null} ? !${route.holidayService} : true">미운행</option>-->
+<!--                                <option value="true" th:selected="${route != null} ? ${route.holidayService} : false">운행</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
 
-                        <div class="form-group">
-                            <label for="typeRestriction">차량 유형 제한</label>
-                            <select id="typeRestriction" name="typeRestriction" required>
-                                <option value="">선택하세요</option>
-                                <option value="Standard" th:selected="${route != null} ? ${route.typeRestriction.name()} == 'Standard' : false">일반</option>
-                                <option value="Special" th:selected="${route != null} ? ${route.typeRestriction.name()} == 'Special' : false">특수</option>
-                                <option value="Large" th:selected="${route != null} ? ${route.typeRestriction.name()} == 'Large' : false">대형</option>
-                            </select>
-                        </div>
+<!--                        <div class="form-group">-->
+<!--                            <label for="typeRestriction">차량 유형 제한</label>-->
+<!--                            <select id="typeRestriction" name="typeRestriction" required>-->
+<!--                                <option value="">선택하세요</option>-->
+<!--                                <option value="Standard" th:selected="${route != null} ? ${route.typeRestriction.name()} == 'Standard' : false">일반</option>-->
+<!--                                <option value="Special" th:selected="${route != null} ? ${route.typeRestriction.name()} == 'Special' : false">특수</option>-->
+<!--                                <option value="Large" th:selected="${route != null} ? ${route.typeRestriction.name()} == 'Large' : false">대형</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
                     </div>
                 </div>
 
@@ -72,9 +83,9 @@
                             </div>
                             <div class="stop-list" id="availableStopsList">
                                 <!-- 사용 가능한 정류소 목록 -->
-                                <div th:each="stop : ${stops}" class="stop-item" th:attr="data-id=${stop.stopId}">
+                                <div th:each="stop : ${stops}" class="stop-item" th:attr="data-id=${stop.id.stopId}">
                                     <div class="stop-name" th:text="${stop.stopName}">정류소 이름</div>
-                                    <button type="button" class="add-stop-btn" th:attr="data-id=${stop.stopId}">
+                                    <button type="button" class="add-stop-btn" th:attr="data-id=${stop.id.stopId}">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
@@ -116,9 +127,9 @@
     const currentRoute = /*[[${route}]]*/ {
         routeId: null,
         routeName: "",
+        routeNum: "",
         routeType: "",
-        holidayService: false,
-        typeRestriction: "",
+        estimatedTime: "",
         stops: []
     };
 
@@ -144,10 +155,8 @@
             const searchText = this.value.toLowerCase();
             document.querySelectorAll('#availableStopsList .stop-item').forEach(item => {
                 const stopName = item.querySelector('.stop-name').textContent.toLowerCase();
-                const stopDetails = item.querySelector('.stop-details') ?
-                    item.querySelector('.stop-details').textContent.toLowerCase() : '';
 
-                if (stopName.includes(searchText) || stopDetails.includes(searchText)) {
+                if (stopName.includes(searchText)) {
                     item.style.display = '';
                 } else {
                     item.style.display = 'none';
@@ -218,13 +227,16 @@
     function updateAvailableStopsList() {
         document.querySelectorAll('#availableStopsList .stop-item').forEach(item => {
             const stopId = parseInt(item.getAttribute('data-id'));
+            // 항상 표시
+            item.style.display = '';
 
-            // 이미 선택된 정류소는 숨김 처리
-            if (selectedStops.includes(stopId)) {
-                item.style.display = 'none';
-            } else {
-                item.style.display = '';
-            }
+            //
+            // // 이미 선택된 정류소는 숨김 처리
+            // if (selectedStops.includes(stopId)) {
+            //     item.style.display = 'none';
+            // } else {
+            //     item.style.display = '';
+            // }
         });
     }
 
@@ -234,17 +246,17 @@
         selectedStopsList.innerHTML = '';
 
         selectedStops.forEach((stopId, index) => {
-            const stop = busstops.find(s => s.stopId === stopId);
+            const stop = busstops.find(s => s.id.stopId === stopId);
             if (stop) {
                 const stopItem = document.createElement('div');
                 stopItem.className = 'stop-item';
-                stopItem.setAttribute('data-id', stop.stopId);
+                stopItem.setAttribute('data-id', stop.id.stopId);
                 stopItem.innerHTML = `
           <div class="stop-handle"><i class="fas fa-grip-lines"></i></div>
           <div class="stop-number">${index + 1}</div>
           <div class="stop-name">${stop.stopName}</div>
           <div class="stop-details">${stop.details || ''}</div>
-          <button type="button" class="remove-stop-btn" data-id="${stop.stopId}" data-index="${index}">
+          <button type="button" class="remove-stop-btn" data-id="${stop.id.stopId}" data-index="${index}">
             <i class="fas fa-times"></i>
           </button>
         `;
@@ -263,11 +275,9 @@
 
     // 정류소 추가
     function addStop(stopId) {
-        if (!selectedStops.includes(stopId)) {
             selectedStops.push(stopId);
             updateSelectedStopsList();
             updateAvailableStopsList();
-        }
     }
 
     // 정류소 제거

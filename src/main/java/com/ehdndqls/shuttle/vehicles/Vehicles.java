@@ -23,6 +23,7 @@ public class Vehicles {
     private String vehicleNumber;
     private Integer seatCapacity;
     private Integer standCapacity;
+    private Integer premiumCapacity;
 
     @Enumerated(EnumType.STRING) // Enum을 문자열로 저장
     @Column(nullable = false)
@@ -32,8 +33,8 @@ public class Vehicles {
 
 
     public enum VehicleType {
-        INNER_CITY, // 시내
-        OUTER_CITY //시외
+        SMALL, // 소형 15인승 이하 1종 보통
+        LARGE   // 대형 16인승 이상 1종 대형
     }
 
 }

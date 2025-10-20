@@ -39,14 +39,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="vehicleType">차량 타입</label>
-                        <select id="vehicleType" name="vehicleType">
-                            <option value="INNER_CITY" th:selected="${vehicle != null} ? ${vehicle.vehicleType.name()} == 'INNER_CITY' : false">시내</option>
-                            <option value="OUTER_CITY" th:selected="${vehicle != null} ? ${vehicle.vehicleType.name()} == 'OUTER_CITY' : false">시외</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
                         <label for="seatCapacity">좌석수</label>
                         <input type="number" id="seatCapacity" name="seatCapacity" min="0" max="100" th:value="${vehicle != null} ? ${vehicle.seatCapacity} : ''" required placeholder="예: 45" />
                     </div>
@@ -54,6 +46,11 @@
                     <div class="form-group">
                         <label for="standCapacity">입석수</label>
                         <input type="number" id="standCapacity" name="standCapacity" min="0" max="100" th:value="${vehicle != null} ? ${vehicle.standCapacity} : ''" required placeholder="예: 10" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="premiumCapacity">프리미엄좌석수</label>
+                        <input type="number" id="premiumCapacity" name="premiumCapacity" min="0" max="100" th:value="${vehicle != null} ? ${vehicle.premiumCapacity} : ''" required placeholder="예: 10" />
                     </div>
                 </div>
 

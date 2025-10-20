@@ -33,15 +33,13 @@
             <div class="filter-options">
                 <select id="typeFilter" name="vehicleType">
                     <option value="">차량 타입 전체</option>
-                    <option value="INNER_CITY">시내</option>
-                    <option value="OUTER_CITY">시외</option>
+                    <option value="SMALL">소형</option>
+                    <option value="LARGE">대형</option>
                 </select>
-                <select id="yearFilter" name="vehicleYear">
-                    <option value="">연식 전체</option>
-                    <option value="2024">2024년</option>
-                    <option value="2023">2023년</option>
-                    <option value="2022">2022년</option>
-                    <option value="2021">2021년 이전</option>
+                <select id="yearFilter" name="vehicleGrade">
+                    <option value="">전체</option>
+                    <option value="premium">프리미엄</option>
+                    <option value="standard">일반</option>
                 </select>
             </div>
         </form>
@@ -50,27 +48,27 @@
             <table class="vehicle-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>차량번호</th>
                     <th>차량타입</th>
                     <th>모델명</th>
                     <th>연식</th>
                     <th>좌석수</th>
                     <th>입석수</th>
+                    <th>프리미엄좌석수</th>
                     <th>관리</th>
                 </tr>
                 </thead>
                 <tbody id="vehicleTableBody">
                 <!-- 차량 데이터 -->
                 <tr th:each="vehicle : ${Vehicles}" data-id="${vehicle.vehicleId}">
-                    <td th:text="${vehicle.vehicleId}"></td>
                     <td th:text="${vehicle.vehicleNumber}"></td>
                     <!-- 차량 타입: 코드값을 한글로 변환 -->
-                    <td th:text="${vehicle.vehicleType.name() == 'INNER_CITY' ? '시내' : '시외'}"></td>
+                    <td th:text="${vehicle.vehicleType.name() == 'SMALL' ? '소형' : '대형'}"></td>
                     <td th:text="${vehicle.vehicleModel}"></td>
                     <td th:text="${vehicle.vehicleYear}"></td>
                     <td th:text="${vehicle.seatCapacity}"></td>
                     <td th:text="${vehicle.standCapacity}"></td>
+                    <td th:text="${vehicle.premiumCapacity}"></td>
 
                     <!-- 관리 버튼 -->
                     <td class="action-cell">

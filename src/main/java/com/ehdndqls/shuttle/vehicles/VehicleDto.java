@@ -1,6 +1,5 @@
-package com.ehdndqls.shuttle.dto;
+package com.ehdndqls.shuttle.vehicles;
 
-import com.ehdndqls.shuttle.vehicles.Vehicles;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,27 +7,27 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class VehicleForm {
+public class VehicleDto {
 
     private Integer vehicleId;
     private String vehicleNumber;
     private String vehicleModel;
     private Integer vehicleYear;
-    private Vehicles.VehicleType vehicleType;
+    private Integer premiumCapacity;
     private Integer seatCapacity;
     private Integer standCapacity;
 
     // 기본 생성자
-    public VehicleForm() {
+    public VehicleDto() {
     }
 
     // 모든 필드를 사용하는 생성자
-    public VehicleForm(Integer vehicleId, String vehicleNumber, String vehicleModel, Integer vehicleYear, Vehicles.VehicleType vehicleType, Integer seatCapacity, Integer standCapacity) {
+    public VehicleDto(Integer vehicleId, String vehicleNumber, String vehicleModel, Integer vehicleYear, Integer premiumCapacity, Integer seatCapacity, Integer standCapacity) {
         this.vehicleId = vehicleId;
         this.vehicleNumber = vehicleNumber;
         this.vehicleModel = vehicleModel;
         this.vehicleYear = vehicleYear;
-        this.vehicleType = vehicleType;
+        this.premiumCapacity = premiumCapacity;
         this.seatCapacity = seatCapacity;
         this.standCapacity = standCapacity;
     }

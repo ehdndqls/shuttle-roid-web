@@ -1,6 +1,5 @@
 package com.ehdndqls.shuttle.vehicles;
 
-import com.ehdndqls.shuttle.dto.VehicleForm;
 import com.ehdndqls.shuttle.organizations.OrganizationsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -50,7 +49,7 @@ public class VehiclesController {
     }
 
     @PostMapping("/vehicle/modify")
-    public String modifyDriver(@ModelAttribute VehicleForm vehicleForm, Authentication auth) {
+    public String modifyDriver(@ModelAttribute VehicleDto vehicleForm, Authentication auth) {
         Integer id = organizationsService.getOrganizationId(auth);
         vehiclesService.modify(vehicleForm, id);
         System.out.println(vehicleForm);

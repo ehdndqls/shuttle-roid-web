@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>노선 관리 - Shuttle-roid 업체 정보 관리 - 운행 관제 시스템</title>
+    <title>노선 관리</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/route-management.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -18,7 +18,7 @@
         <div class="section-header">
             <h2>노선 관리</h2>
             <div class="action-buttons">
-                <a href="/routes/modify/0" id="addRouteBtn" class="btn btn-primary">
+                <a href="/routes/modify?routeId=0" id="addRouteBtn" class="btn btn-primary">
                     <i class="fas fa-plus"></i> 노선 추가
                 </a>
             </div>
@@ -27,28 +27,28 @@
         <div class="route-container">
             <!-- 노선 목록 섹션 -->
             <div class="route-list-section">
+                <!-- 검색 및 필터 -->
                 <form id="searchForm" action="/routes/search" method="get" class="search-filter">
                     <div class="search-box">
-                        <input type="text" id="searchInput" name="searchText" placeholder="노선 이름으로 검색">
-                        <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                        <input type="text" placeholder="노선명 또는 번호로 검색..." id="searchInput">
+                        <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </div>
                     <div class="filter-options">
-                        <select id="typeFilter" name="routeType">
-                            <option value="">노선 타입 전체</option>
-                            <option value="CIRCULATION">순환</option>
+                        <select id="routeTypeFilter" name="routeType">
+                            <option value="">전체 타입</option>
+                            <option value="CIRCULAR">순환</option>
                             <option value="ONE_WAY">편도</option>
                             <option value="ROUND_TRIP">왕복</option>
-                        </select>
-                        <select id="holidayFilter" name="holidayService">
-                            <option value="">휴일 운행 전체</option>
-                            <option value="true">휴일 운행</option>
-                            <option value="false">평일만 운행</option>
                         </select>
                     </div>
                 </form>
 
+
+                <!-- 노선 목록 -->
                 <div class="route-list" id="routeList">
-                    <!-- 노선 목록은 JavaScript로 동적 생성됩니다 -->
+                    <!-- 노선 카드들이 JavaScript로 동적 생성됩니다 -->
                 </div>
             </div>
 
@@ -66,275 +66,241 @@
                     </div>
                 </div>
 
-                <div class="route-info-card" id="routeInfoCard" style="display: none;">
-                    <div class="route-info-item">
-                        <span class="info-label">노선 타입</span>
-                        <span class="info-value" id="routeTypeValue"></span>
-                    </div>
-                    <div class="route-info-item">
-                        <span class="info-label">휴일 운행</span>
-                        <span class="info-value" id="holidayServiceValue"></span>
-                    </div>
-                    <div class="route-info-item">
-                        <span class="info-label">차량 유형 제한</span>
-                        <span class="info-value" id="typeRestrictionValue"></span>
-                    </div>
-                    <div class="route-info-item">
-                        <span class="info-label">정류소 수</span>
-                        <span class="info-value" id="stopsCountValue"></span>
-                    </div>
-                    <div class="route-info-item">
-                        <span class="info-label">예상 소요시간</span>
-                        <span class="info-value" id="estimatedTimeValue"></span>
-                    </div>
-                </div>
-
-                <div class="route-stops-visual" id="routeStopsVisual" style="display: none;">
-                    <div class="route-line" id="routeLine"></div>
-                    <div class="route-stops" id="routeStops">
-                        <!-- 정류소 목록은 JavaScript로 동적 생성됩니다 -->
-                    </div>
-                </div>
-
+                <!-- 선택된 노선이 없을 때 -->
                 <div class="no-route-selected" id="noRouteSelected">
                     <div class="empty-state">
                         <i class="fas fa-route"></i>
-                        <p>왼쪽에서 노선을 선택하면 정류소 정보가 표시됩니다.</p>
+                        <p>왼쪽에서 노선을 선택하면<br>정류소 정보가 표시됩니다.</p>
+                    </div>
+                </div>
+
+                <!-- 노선 정보 카드 (선택시 표시) -->
+                <div class="route-info-card" id="routeInfoCard" style="display: none;">
+                    <div class="route-info-item">
+                        <div class="info-label">노선 ID</div>
+                        <div class="info-value" id="routeId">-</div>
+                    </div>
+                    <div class="route-info-item">
+                        <div class="info-label">노선 번호</div>
+                        <div class="info-value" id="routeNum">-</div>
+                    </div>
+                    <div class="route-info-item">
+                        <div class="info-label">노선명</div>
+                        <div class="info-value" id="routeName">-</div>
+                    </div>
+                    <div class="route-info-item">
+                        <div class="info-label">노선 타입</div>
+                        <div class="info-value">
+                            <span class="route-type-badge" id="routeTypeBadge">-</span>
+                        </div>
+                    </div>
+                    <div class="route-info-item">
+                        <div class="info-label">예상 소요시간</div>
+                        <div class="info-value" id="estimatedTime">-</div>
+                    </div>
+                </div>
+
+                <!-- 정류소 목록 시각화 (선택시 표시) -->
+                <div class="route-stops-visual" id="routeStopsVisual" style="display: none;">
+                    <div class="route-line" id="routeLine"></div>
+                    <div class="route-stops" id="routeStops">
+                        <!-- 정류소 목록이 여기에 동적으로 추가됩니다 -->
                     </div>
                 </div>
             </div>
         </div>
+        <aside th:replace="~{ aside.html::aside }"></aside>
     </section>
 
-    <aside th:replace="~{ aside.html::aside }"></aside>
 </main>
-
 <footer th:replace="~{ footer.html::footer }"></footer>
 
 <script th:inline="javascript">
-    // 서버에서 받은 데이터
-    const routes = /*[[${routes}]]*/ [];
+    /*<![CDATA[*/
+    const routesData = /*[[${routes}]]*/ [];
+    /*]]>*/
+</script>
 
-    // 노선 타입 한글 변환
-    const routeTypeMap = {
-        "CIRCULATION": "순환",
-        "ONE_WAY": "편도",
-        "ROUND_TRIP": "왕복"
-    };
+<script>
 
-    // 차량 유형 한글 변환
-    const typeRestrictionMap = {
-        "Standard": "일반",
-        "Large": "대형",
-        "Special": "특수"
-    };
+    let selectedRouteIndex = null;
 
-    // 노선 타입별 클래스
-    const routeTypeClass = {
-        "CIRCULATION": "circular",
-        "ONE_WAY": "one-way",
-        "ROUND_TRIP": "round-trip"
-    };
+    document.addEventListener('DOMContentLoaded', function() {
+        renderRouteList(routesData);
+    });
 
-    // 노선 목록 렌더링
-    function renderRouteList() {
-        const routeList = document.getElementById('routeList');
-        routeList.innerHTML = '';
+    function renderRouteList(routes) {
+        const routeListContainer = document.getElementById('routeList');
+        routeListContainer.innerHTML = '';
 
-        routes.forEach(route => {
-            // 출발지와 도착지 결정
-            let startStop = route.stops.length > 0 ? route.stops[0].name : '정류소 없음';
-            let endStop = route.stops.length > 0 ? route.stops[route.stops.length - 1].name : '정류소 없음';
-
-            const routeCard = document.createElement('div');
-            routeCard.className = 'route-card';
-            routeCard.setAttribute('data-id', route.routeId);
-            routeCard.innerHTML = `
-        <div class="route-card-header">
-          <h3>${route.routeName}</h3>
-          <span class="route-type ${routeTypeClass[route.routeType]}">${routeTypeMap[route.routeType]}</span>
-        </div>
-        <div class="route-card-body">
-          <div class="route-info">
-            <div class="route-points">
-              <span class="route-point"><i class="fas fa-play-circle"></i> ${startStop}</span>
-              <span class="route-point"><i class="fas fa-stop-circle"></i> ${endStop}</span>
-            </div>
-            <div class="route-stats">
-              <span><i class="fas fa-clock"></i> ${route.estimatedTime}</span>
-              <span><i class="fas fa-map-marker-alt"></i> 정류장 ${route.stops.length}개</span>
-              <span><i class="fas fa-bus"></i> ${typeRestrictionMap[route.typeRestriction] || route.typeRestriction}</span>
-            </div>
-          </div>
-        </div>
-      `;
-
-            routeCard.addEventListener('click', () => selectRoute(route.routeId));
-            routeList.appendChild(routeCard);
+        routes.forEach((route, index) => {
+            const routeCard = createRouteCard(route, index);
+            routeListContainer.appendChild(routeCard);
         });
     }
 
-    // 노선 선택 시 정류소 목록 표시
-    function selectRoute(routeId) {
-        // 선택된 노선 강조
+    function createRouteCard(route, index) {
+        const routeCard = document.createElement('div');
+        routeCard.className = 'route-card';
+        routeCard.onclick = () => selectRoute(index);
+
+        const routeTypeClass = getRouteTypeClass(route.routeType);
+        const routeTypeText = getRouteTypeText(route.routeType);
+
+        const stopList = route.stopList ?? [];
+        const firstStop = route.stopList[0]?.name || '';
+        const lastStop = route.stopList[route.stopList.length - 1]?.name || '';
+
+        routeCard.innerHTML = `
+                <div class="route-card-header">
+                    <h3>${route.routeNum}번 노선</h3>
+                    <span class="route-type ${routeTypeClass}">${routeTypeText}</span>
+                </div>
+                <div class="route-card-body">
+                    <div class="route-info">
+                        <div class="route-points">
+                            <div class="route-point">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${firstStop} ${route.routeType === 'ROUND_TRIP' ? '↔' : '→'} ${lastStop}
+                            </div>
+                        </div>
+                        <div class="route-stats">
+                            <span><i class="fas fa-clock"></i> ${route.estimatedTime}</span>
+                            <span><i class="fas fa-bus-alt"></i> ${route.stopList.length}개 정류소</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        return routeCard;
+    }
+
+    function selectRoute(index) {
+        // 이전 선택 해제
         document.querySelectorAll('.route-card').forEach(card => {
             card.classList.remove('selected');
-            if (card.getAttribute('data-id') == routeId) {
-                card.classList.add('selected');
-            }
         });
 
-        const route = routes.find(r => r.routeId == routeId);
-        if (!route) return;
+        // 새로운 선택
+        document.querySelectorAll('.route-card')[index].classList.add('selected');
+        selectedRouteIndex = index;
 
         // 노선 정보 표시
-        document.getElementById('selectedRouteName').textContent = route.routeName;
-        document.getElementById('routeActions').style.display = 'flex';
-        document.getElementById('routeInfoCard').style.display = 'grid';
-        document.getElementById('routeStopsVisual').style.display = 'block';
-        document.getElementById('noRouteSelected').style.display = 'none';
-
-        // 수정 버튼 링크 업데이트
-        document.getElementById('editRouteBtn').href = `/routes/modify/${routeId}`;
-        document.getElementById('deleteRouteBtn').setAttribute('data-id', routeId);
-
-        // 노선 정보 업데이트
-        document.getElementById('routeTypeValue').innerHTML = `<span class="route-type-badge ${routeTypeClass[route.routeType]}">${routeTypeMap[route.routeType]}</span>`;
-        document.getElementById('holidayServiceValue').textContent = route.holidayService ? '운행' : '미운행';
-        document.getElementById('typeRestrictionValue').textContent = typeRestrictionMap[route.typeRestriction] || route.typeRestriction;
-        document.getElementById('stopsCountValue').textContent = `${route.stops.length}개`;
-        document.getElementById('estimatedTimeValue').textContent = route.estimatedTime;
-
-        // 노선 타입에 따라 라인 스타일 변경
-        const routeLine = document.getElementById('routeLine');
-        routeLine.className = 'route-line';
-        if (route.routeType === 'CIRCULATION') {
-            routeLine.classList.add('circular-line');
-        }
-
-        // 정류소 목록 렌더링
-        renderStops(route);
+        displayRouteInfo(routesData[index]);
     }
 
-    // 정류소 목록 렌더링
-    function renderStops(route) {
-        const routeStops = document.getElementById('routeStops');
-        routeStops.innerHTML = '';
+    function displayRouteInfo(route) {
+        // 빈 상태 숨기기
+        document.getElementById('noRouteSelected').style.display = 'none';
 
-        route.stops.forEach((stop, index) => {
-            const isFirst = index === 0;
-            const isLast = index === route.stops.length - 1;
+        // 노선 정보 카드 표시
+        document.getElementById('routeInfoCard').style.display = 'grid';
+        document.getElementById('routeStopsVisual').style.display = 'block';
 
+        // 헤더 업데이트
+        document.getElementById('selectedRouteName').textContent = `${route.routeNum}번 ${route.routeName}`;
+
+        // 노선 정보 업데이트
+        document.getElementById('routeId').textContent = `${route.id.routeId}`;
+        document.getElementById('routeNum').textContent = route.routeNum;
+        document.getElementById('routeName').textContent = route.routeName;
+        document.getElementById('estimatedTime').textContent = route.estimatedTime;
+
+        // 노선 타입 배지 업데이트
+        const typeBadge = document.getElementById('routeTypeBadge');
+        typeBadge.textContent = getRouteTypeText(route.routeType);
+        typeBadge.className = `route-type-badge ${getRouteTypeClass(route.routeType)}`;
+
+        // 노선 라인 스타일 업데이트
+        const routeLine = document.getElementById('routeLine');
+        if (route.routeType === 'CIRCULAR') {
+            routeLine.className = 'route-line circular-line';
+        } else {
+            routeLine.className = 'route-line';
+        }
+
+        // 정류소 목록 업데이트
+        displayStops(route.stopList);
+    }
+
+    function displayStops(stops) {
+        const stopsContainer = document.getElementById('routeStops');
+        stopsContainer.innerHTML = '';
+
+        stops.forEach((stop, index) => {
             const stopElement = document.createElement('div');
             stopElement.className = 'route-stop';
 
-            let markerClass = '';
-            if (isFirst) markerClass = 'start-stop';
-            else if (isLast) markerClass = 'end-stop';
+            let markerClass = 'stop-marker';
+            if (index === 0) markerClass += ' start-stop';
+            else if (index === stops.length - 1) markerClass += ' end-stop';
 
             stopElement.innerHTML = `
-        <div class="stop-marker ${markerClass}">${index + 1}</div>
-        <div class="stop-info">
-          <div class="stop-name">${stop.name}</div>
-          <div class="stop-details">${stop.details}</div>
-        </div>
-      `;
+                    <div class="${markerClass}">
+                        ${index + 1}
+                    </div>
+                    <div class="stop-info">
+                        <div class="stop-name">${stop.name}</div>
+                        <div class="stop-details">${stop.details}</div>
+                    </div>
+                `;
 
-            routeStops.appendChild(stopElement);
+            stopsContainer.appendChild(stopElement);
         });
     }
 
-    // 노선 삭제 기능
-    document.getElementById('deleteRouteBtn').addEventListener('click', function() {
-        const routeId = this.getAttribute('data-id');
-        if (confirm('정말 이 노선을 삭제하시겠습니까?')) {
-            // 실제 구현 시 서버로 삭제 요청을 보냄
-            fetch(`/api/routes/${routeId}`, {
-                method: 'DELETE',
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert('노선이 삭제되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('노선 삭제에 실패했습니다.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('오류가 발생했습니다.');
-                });
-        }
-    });
+    function getRouteTypeClass(type) {
+        const typeMap = {
+            'CIRCULAR': 'circular',
+            'ONE_WAY': 'one-way',
+            'ROUND_TRIP': 'round-trip'
+        };
+        return typeMap[type] || 'circular';
+    }
+
+    function getRouteTypeText(type) {
+        const typeMap = {
+            'CIRCULAR': '순환',
+            'ONE_WAY': '편도',
+            'ROUND_TRIP': '왕복'
+        };
+        return typeMap[type] || type;
+    }
 
     // 검색 기능
-    document.getElementById('searchInput').addEventListener('input', function() {
-        const searchText = this.value.toLowerCase();
-        document.querySelectorAll('.route-card').forEach(card => {
-            const routeName = card.querySelector('h3').textContent.toLowerCase();
-            if (routeName.includes(searchText)) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        filterRoutes();
+    });
+
+    // 필터 기능
+    document.getElementById('routeTypeFilter').addEventListener('change', function(e) {
+        filterRoutes();
+    });
+
+    function filterRoutes() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const filterType = document.getElementById('routeTypeFilter').value;
+
+        const filteredRoutes = routesData.filter(route => {
+            const matchesSearch = route.routeName.toLowerCase().includes(searchTerm) ||
+                route.routeNum.includes(searchTerm);
+            const matchesFilter = !filterType || route.routeType === filterType;
+
+            return matchesSearch && matchesFilter;
         });
-    });
 
-    // 타입 필터링
-    document.getElementById('typeFilter').addEventListener('change', function() {
-        const filterValue = this.value;
-        document.querySelectorAll('.route-card').forEach(card => {
-            const routeId = card.getAttribute('data-id');
-            const route = routes.find(r => r.routeId == routeId);
+        renderRouteList(filteredRoutes);
 
-            if (!filterValue || route.routeType === filterValue) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    });
-
-    // 휴일 운행 필터링
-    document.getElementById('holidayFilter').addEventListener('change', function() {
-        const filterValue = this.value;
-        document.querySelectorAll('.route-card').forEach(card => {
-            const routeId = card.getAttribute('data-id');
-            const route = routes.find(r => r.routeId == routeId);
-
-            if (filterValue === '' ||
-                (filterValue === 'true' && route.holidayService) ||
-                (filterValue === 'false' && !route.holidayService)) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    });
-
-    // 페이지 로드 시 노선 목록 렌더링
-    document.addEventListener('DOMContentLoaded', function() {
-        renderRouteList();
-    });
-
-    // 현재 날짜와 시간 표시 함수
-    function updateDateTime() {
-        const now = new Date();
-        const options = {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            weekday: 'long',
-            hour: '2-digit',
-            minute: '2-digit'
-        };
-        document.getElementById('datetime').textContent = now.toLocaleDateString('ko-KR', options);
+        // 선택된 노선이 필터링되면 선택 해제
+        if (selectedRouteIndex !== null && !filteredRoutes.includes(routesData[selectedRouteIndex])) {
+            selectedRouteIndex = null;
+            document.getElementById('noRouteSelected').style.display = 'flex';
+            document.getElementById('routeInfoCard').style.display = 'none';
+            document.getElementById('routeStopsVisual').style.display = 'none';
+            document.getElementById('selectedRouteName').textContent = '노선을 선택해주세요';
+        }
     }
-
-    // 페이지 로드 시 시간 표시 및 1분마다 업데이트
-    updateDateTime();
-    setInterval(updateDateTime, 60000);
 </script>
-
 </body>
 </html>

@@ -1,6 +1,5 @@
 package com.ehdndqls.shuttle.drivers;
 
-import com.ehdndqls.shuttle.dto.DriverForm;
 import com.ehdndqls.shuttle.organizations.OrganizationsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -50,7 +49,7 @@ public class DriversController {
     }
 
     @PostMapping("/driver/modify")
-    public String modifyDriver(@ModelAttribute DriverForm driverForm, Authentication auth) {
+    public String modifyDriver(@ModelAttribute DriverDto driverForm, Authentication auth) {
         Integer id = organizationsService.getOrganizationId(auth);
         driversService.modify(driverForm, id);
         return "redirect:/driver/page/1";
@@ -58,11 +57,11 @@ public class DriversController {
 
     @GetMapping("/driver/search")
     public String search(@RequestParam(required = false) String searchText,
-                         @RequestParam(required = false) Drivers.DriverType type,
-                         @RequestParam(required = false) Integer joinYear,
+                         @RequestParam(required = false) Boolean active,
+                         @RequestParam(required = false) Drivers.EmploymentType type,
                          Model model, Authentication auth) {
         Integer id = organizationsService.getOrganizationId(auth);
-        List<Drivers> driverList = driversService.search(searchText, type, joinYear ,id);
+        List<Drivers> driverList = driversService.search(searchText, active, type, id);
         model.addAttribute("Drivers", driverList);
         model.addAttribute("currentPage", 1); // 현재 페이지
         model.addAttribute("totalPages", 1); // 총 페이지 수
