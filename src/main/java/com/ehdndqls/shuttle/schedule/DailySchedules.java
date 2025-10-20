@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -16,32 +16,36 @@ import java.time.LocalTime;
 @ToString
 public class DailySchedules {
 
-    // 기본키: organizationId + scheduleDate
-    @EmbeddedId
-    private DailyScheduleId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer scheduleId;
 
-    // 운행 시작 시간
-    private LocalTime startTime;
+    // 기관명
+    private Integer organizationId;
+
+    // 스케줄 날짜
+    private LocalDate date;
 
     // 코스 엔티티 join 안하고 그냥 Integer 코스키만 저장
+    @Column(nullable = false)
     private Integer courseId;
 
+    // 차량Id
+    private Integer vehicleId;
 
-    // 차량 엔티티
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_id")
-    private Vehicles vehicle;
+    // 승무원Id
+    private Integer driverId;
 
-    // 승무원 엔티티
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id")
-    private Drivers driver;
-
+    // 현재 정류소 정보
     private Integer currentRoute;
 
     @Enumerated(EnumType.STRING) // Enum을 문자열로 저장
     @Column(nullable = false)
     private Status status;
+
+    @Enumerated(EnumType.STRING) // Enum을 문자열로 저장
+    @Column(nullable = false)
+    private RouteStatus routeStatus;
 
     public enum Status {
         READY,    // 운행 준비
@@ -50,10 +54,19 @@ public class DailySchedules {
         TERMINATE // 운행종료
     }
 
+    public enum RouteStatus {
+        READY,      // 준비
+        APPROACH,   // 접근
+        ARRIVAL,    // 도착
+        DEPARTURE,  // 출발
+    }
+
     @PrePersist
     public void prePersist() {
         if (status == null) status = Status.valueOf("READY");
         if (currentRoute == null) currentRoute = 0;
+        if (vehicleId == null) vehicleId = 0;
+        if (driverId == null) driverId = 0;
     }
 
 }

@@ -12,7 +12,7 @@ public class MidnightScheduledTask {
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void runDailyAtMidnight() {
         try {
-            // TODO: 자정에 실행할 작업 비즈니스서비스로직에서 구현
+            dailyScheduleService.GenerateSchedule();
 
             System.out.println("자정 작업 실행 (Spring): " + java.time.ZonedDateTime.now(java.time.ZoneId.of("Asia/Seoul")));
         } catch (Exception e) {
