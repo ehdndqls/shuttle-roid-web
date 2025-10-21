@@ -38,9 +38,10 @@
                     <div class="filter-options">
                         <select id="routeTypeFilter" name="routeType">
                             <option value="">전체 타입</option>
-                            <option value="CIRCULAR">순환</option>
+                            <option value="CIRCULATION">순환</option>
                             <option value="ONE_WAY">편도</option>
-                            <option value="ROUND_TRIP">왕복</option>
+                            <option value="ROUND_TRIP_UP">상행</option>
+                            <option value="ROUND_TRIP_DOWN">하행</option>
                         </select>
                     </div>
                 </form>
@@ -161,7 +162,7 @@
                         <div class="route-points">
                             <div class="route-point">
                                 <i class="fas fa-map-marker-alt"></i>
-                                ${firstStop} ${route.routeType === 'ROUND_TRIP' ? '↔' : '→'} ${lastStop}
+                                ${firstStop} ${(route.routeType === 'ROUND_TRIP_UP' || route.routeType === 'ROUND_TRIP_DOWN') ? '↔' : '→'} ${lastStop}
                             </div>
                         </div>
                         <div class="route-stats">
@@ -213,7 +214,7 @@
 
         // 노선 라인 스타일 업데이트
         const routeLine = document.getElementById('routeLine');
-        if (route.routeType === 'CIRCULAR') {
+        if (route.routeType === 'CIRCULATION') {
             routeLine.className = 'route-line circular-line';
         } else {
             routeLine.className = 'route-line';
@@ -251,18 +252,20 @@
 
     function getRouteTypeClass(type) {
         const typeMap = {
-            'CIRCULAR': 'circular',
+            'CIRCULATION': 'circular',
             'ONE_WAY': 'one-way',
-            'ROUND_TRIP': 'round-trip'
+            'ROUND_TRIP_UP': 'round-trip-up',
+            'ROUND_TRIP_DOWN': 'round-trip-down'
         };
         return typeMap[type] || 'circular';
     }
 
     function getRouteTypeText(type) {
         const typeMap = {
-            'CIRCULAR': '순환',
+            'CIRCULATION': '순환',
             'ONE_WAY': '편도',
-            'ROUND_TRIP': '왕복'
+            'ROUND_TRIP_UP': '상행',
+            'ROUND_TRIP_DOWN': '하행'
         };
         return typeMap[type] || type;
     }

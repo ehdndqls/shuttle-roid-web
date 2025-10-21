@@ -212,7 +212,11 @@
     color: #166534;
 }
 
-.route-type.round-trip {
+.route-type.round-trip-down {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+.route-type.round-trip-up {
     background-color: #fef3c7;
     color: #92400e;
 }
@@ -356,7 +360,12 @@
     color: #166534;
 }
 
-.route-type-badge.round-trip {
+.route-type-badge.round-trip-up {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.route-type-badge.round-trip-down {
     background-color: #fef3c7;
     color: #92400e;
 }

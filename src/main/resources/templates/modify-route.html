@@ -47,7 +47,8 @@
                                 <option value="">선택하세요</option>
                                 <option value="CIRCULATION" th:selected="${route != null} ? ${route.routeType.name()} == 'CIRCULATION' : false">순환</option>
                                 <option value="ONE_WAY" th:selected="${route != null} ? ${route.routeType.name()} == 'ONE_WAY' : false">편도</option>
-                                <option value="ROUND_TRIP" th:selected="${route != null} ? ${route.routeType.name()} == 'ROUND_TRIP' : false">왕복</option>
+                                <option value="ROUND_TRIP_UP" th:selected="${route != null} ? ${route.routeType.name()} == 'ROUND_TRIP_UP' : false">상행</option>
+                                <option value="ROUND_TRIP_DOWN" th:selected="${route != null} ? ${route.routeType.name()} == 'ROUND_TRIP_DOWN' : false">하행</option>
                             </select>
                         </div>
 

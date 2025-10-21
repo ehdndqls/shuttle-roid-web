@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shuttle-roid - 기관 선택</title>
+    <link rel="stylesheet" href="/css/user/init.css">
+</head>
+<body>
+<div class="container">
+    <div class="select-box-wrapper">
+        <div class="logo">
+            <h1>shuttle-roid</h1>
+        </div>
+
+        <p class="instruction">승차 기관을 선택해주세요</p>
+
+        <select id="orgSelect" class="org-select">
+            <option value="" disabled selected>기관을 선택하세요</option>
+        </select>
+
+        <button id="confirmBtn" class="confirm-btn" disabled>확인</button>
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const orgs = /*[[${orgs}]]*/ [];
+    console.log(orgs);
+    /*]]>*/
+</script>
+<script>
+
+    const selectElement = document.getElementById('orgSelect');
+    const confirmBtn = document.getElementById('confirmBtn');
+    let selectedOrgID = null;
+
+    // 셀렉트 박스에 옵션 추가
+    orgs.forEach(org => {
+        const option = document.createElement('option');
+        option.value = org.orgID;
+        option.textContent = `${org.orgID} - ${org.name}`;
+        selectElement.appendChild(option);
+    });
+
+    // 셀렉트 박스 변경 이벤트
+    selectElement.addEventListener('change', function() {
+        selectedOrgID = this.value;
+        confirmBtn.disabled = false;
+    });
+
+    // 확인 버튼 클릭 이벤트
+    confirmBtn.addEventListener('click', function() {
+        if (selectedOrgID) {
+            window.location.href = `/user?orgID=${selectedOrgID}`;
+        }
+    });
+
+    // 엔터키로도 선택 가능
+    selectElement.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && selectedOrgID) {
+            window.location.href = `/user?orgID=${selectedOrgID}`;
+        }
+    });
+</script>
+</body>
+</html>

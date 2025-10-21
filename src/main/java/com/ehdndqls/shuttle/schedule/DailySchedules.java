@@ -36,8 +36,11 @@ public class DailySchedules {
     // 승무원Id
     private Integer driverId;
 
-    // 현재 정류소 정보
+    // 현재 노선 정보
     private Integer currentRoute;
+
+    // 현재 정류소 정보
+    private Integer currentStop;
 
     @Enumerated(EnumType.STRING) // Enum을 문자열로 저장
     @Column(nullable = false)
@@ -63,7 +66,9 @@ public class DailySchedules {
 
     @PrePersist
     public void prePersist() {
-        if (status == null) status = Status.valueOf("READY");
+        if (status == null) status = Status.READY;
+        if (routeStatus == null) routeStatus = RouteStatus.READY;
+        if(currentStop == null) currentStop = 0;
         if (currentRoute == null) currentRoute = 0;
         if (vehicleId == null) vehicleId = 0;
         if (driverId == null) driverId = 0;

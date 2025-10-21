@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노선 상세 - shuttle-roid</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/detail.css">
+</head>
+<body>
+<div class="container">
+    <!-- 뒤로가기 버튼 -->
+    <button class="back-button" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        <span>노선 목록</span>
+    </button>
+
+    <!-- 노선 정보 카드 -->
+    <div class="route-info-card" id="routeInfoCard">
+        <div class="route-header">
+            <div class="route-number" id="routeNumber">-</div>
+            <span class="route-type" id="routeTypeBadge">-</span>
+        </div>
+        <h2 class="route-name" id="routeName">-</h2>
+        <div class="route-stats">
+            <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <span id="estimatedTime">-</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-bus-alt"></i>
+                <span id="stopCount">-</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 정류소 목록 -->
+    <div class="stops-section">
+        <h3 class="section-title">정류소 목록</h3>
+        <div class="route-stops-visual">
+            <div class="route-line" id="routeLine"></div>
+            <div class="route-stops" id="routeStops">
+                <!-- 정류소 목록이 여기에 동적으로 추가됩니다 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // 서버에서 전달된 실제 route 객체
+    const route = /*[[${route}]]*/ {};
+    // 서버에서 전달된 현재 버스 위치 상태 리스트
+    const statusList = /*[[${status}]]*/ [];
+    console.log(statusList);
+    /*]]>*/
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('[v0] Route data:', route);
+        console.log('[v0] Status list:', statusList);
+
+        if (route && route.id) {
+            displayRouteDetail({
+                routeId: route.id.routeId,
+                routeNum: route.routeNum,
+                routeName: route.routeName,
+                routeType: route.routeType,
+                estimatedTime: route.estimatedTime,
+                stopList: route.stopList
+            });
+        } else {
+            alert('노선 정보를 찾을 수 없습니다.');
+            goBack();
+        }
+    });
+
+    function displayRouteDetail(route) {
+        document.getElementById('routeNumber').textContent = `${route.routeNum}번`;
+        document.getElementById('routeName').textContent = route.routeName;
+
+        const typeBadge = document.getElementById('routeTypeBadge');
+        typeBadge.textContent = getRouteTypeText(route.routeType);
+        typeBadge.className = `route-type ${getRouteTypeClass(route.routeType)}`;
+
+        document.getElementById('estimatedTime').textContent = route.estimatedTime;
+        document.getElementById('stopCount').textContent = `${route.stopList.length}개 정류소`;
+
+        const routeLine = document.getElementById('routeLine');
+        routeLine.className = route.routeType === 'CIRCULATION' ? 'route-line circular-line' : 'route-line';
+
+        displayStops(route.stopList);
+    }
+
+    function displayStops(stops) {
+        const stopsContainer = document.getElementById('routeStops');
+        stopsContainer.innerHTML = '';
+
+        stops.forEach((stop, index) => {
+            const stopElement = document.createElement('div');
+            stopElement.className = 'route-stop';
+            stopElement.setAttribute('data-stop-index', index);
+
+            let markerClass = 'stop-marker';
+            if (index === 0) markerClass += ' start-stop';
+            else if (index === stops.length - 1) markerClass += ' end-stop';
+
+            stopElement.innerHTML = `
+                <div class="${markerClass}">
+                    ${index + 1}
+                </div>
+                <div class="stop-info">
+                    <div class="stop-name">${stop.name}</div>
+                    <div class="stop-details">${stop.details || ''}</div>
+                </div>
+            `;
+            stopsContainer.appendChild(stopElement);
+        });
+
+        //  버스 아이콘 배치
+        displayBusIcons();
+    }
+
+    function displayBusIcons() {
+        if (!statusList || statusList.length === 0) return;
+
+        statusList.forEach((busStatus, busIndex) => {
+            const stopId = '1-'+busStatus.currentStop;
+            //const currentStopIndex = busStatus.currentStop;
+            const status = busStatus.status;
+
+            // stopId로 정류소 인덱스 찾기
+            const stopIndex = route.stopList.findIndex(stop => stop.id === stopId);
+            if (stopIndex === -1) return;
+
+            const stopElement = document.querySelector(`[data-stop-index="${stopIndex}"]`);
+            if (!stopElement) return;
+
+            const busIcon = document.createElement('div');
+            busIcon.className = 'bus-icon';
+
+            if (status === '접근') busIcon.classList.add('bus-approaching');
+            else if (status === '도착') busIcon.classList.add('bus-arrived');
+            else if (status === '출발') busIcon.classList.add('bus-departing');
+
+            busIcon.innerHTML = '<i class="fas fa-bus"></i>';
+
+            // 겹치지 않게 offset 적용 (같은 정류소에 여러 버스일 경우)
+            busIcon.style.left = `${busIndex * 20}px`; // 예: 20px씩 밀기
+
+            stopElement.appendChild(busIcon);
+        });
+    }
+
+    function getRouteTypeClass(type) {
+        return {
+            'CIRCULATION': 'circular',
+            'ONE_WAY': 'one-way',
+            'ROUND_TRIP_UP': 'round-trip',
+            'ROUND_TRIP_DOWN': 'round-trip'
+        }[type] || 'circular';
+    }
+
+    function getRouteTypeText(type) {
+        return {
+            'CIRCULATION': '순환',
+            'ONE_WAY': '편도',
+            'ROUND_TRIP_UP': '상행',
+            'ROUND_TRIP_DOWN': '하행'
+        }[type] || type;
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+</script>
+</body>
+</html>

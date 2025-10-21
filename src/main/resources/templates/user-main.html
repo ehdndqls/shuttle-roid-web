@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노선 선택 - shuttle-roid</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/user/user.css">
+</head>
+<body>
+<div class="container">
+    <header class="page-header">
+        <h1>shuttle-roid</h1>
+        <p class="subtitle">노선을 선택해주세요</p>
+    </header>
+
+    <!-- 검색 및 필터 -->
+    <div class="search-filter">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="노선 번호 또는 이름으로 검색...">
+        </div>
+        <div class="filter-box">
+            <select id="routeTypeFilter">
+                <option value="">전체 노선</option>
+                <option value="CIRCULATION">순환</option>
+                <option value="ONE_WAY">편도</option>
+                <option value="ROUND_TRIP_UP">상행</option>
+                <option value="ROUND_TRIP_DOWN">하행</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 노선 목록 -->
+    <div class="route-list" id="routeList">
+        <!-- 노선 카드들이 JavaScript로 동적 생성됩니다 -->
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const routesData = /*[[${routeList}]]*/ [];
+    console.log(routesData);
+    /*]]>*/
+</script>
+
+<script>
+
+
+    let filteredRoutes = [...routesData];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderRouteList(filteredRoutes);
+        setupEventListeners();
+    });
+
+    function setupEventListeners() {
+        // 검색 기능
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            filterRoutes();
+        });
+
+        // 필터 기능
+        document.getElementById('routeTypeFilter').addEventListener('change', function(e) {
+            filterRoutes();
+        });
+    }
+
+    function filterRoutes() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const filterType = document.getElementById('routeTypeFilter').value;
+
+        filteredRoutes = routesData.filter(route => {
+            const matchesSearch = route.routeName.toLowerCase().includes(searchTerm) ||
+                route.routeNum.includes(searchTerm);
+            const matchesFilter = !filterType || route.routeType === filterType;
+
+            return matchesSearch && matchesFilter;
+        });
+
+        renderRouteList(filteredRoutes);
+    }
+
+    function renderRouteList(routes) {
+        const routeListContainer = document.getElementById('routeList');
+        routeListContainer.innerHTML = '';
+
+        if (routes.length === 0) {
+            routeListContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bus"></i>
+                        <p>검색 결과가 없습니다</p>
+                    </div>
+                `;
+            return;
+        }
+
+        routes.forEach((route) => {
+            const routeCard = createRouteCard(route);
+            routeListContainer.appendChild(routeCard);
+        });
+    }
+
+    function createRouteCard(route) {
+        const routeCard = document.createElement('div');
+        routeCard.className = 'route-card';
+        console.log(route.id.routeId);
+        routeCard.onclick = () => selectRoute(route.id.routeId);
+
+        const routeTypeClass = getRouteTypeClass(route.routeType);
+        const routeTypeText = getRouteTypeText(route.routeType);
+
+        const firstStop = route.stopList[0]?.name || '';
+        const lastStop = route.stopList[route.stopList.length - 1]?.name || '';
+        const arrow = (route.routeType === 'ROUND_TRIP_UP' || route.routeType === 'ROUND_TRIP_DOWN') ? '↔' : '→';
+
+        routeCard.innerHTML = `
+                <div class="route-card-header">
+                    <div class="route-number">${route.routeNum}번</div>
+                    <span class="route-type ${routeTypeClass}">${routeTypeText}</span>
+                </div>
+                <div class="route-name">${route.routeName}</div>
+                <div class="route-path">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>${firstStop} ${arrow} ${lastStop}</span>
+                </div>
+                <div class="route-info">
+                    <span><i class="fas fa-clock"></i> ${route.estimatedTime}</span>
+                    <span><i class="fas fa-bus-alt"></i> ${route.stopList.length}개 정류소</span>
+                </div>
+            `;
+
+        return routeCard;
+    }
+
+    function selectRoute(routeId) {
+        // 노선 디테일 페이지로 이동
+        window.location.href = `/user/route-detail?orgId=1&routeId=${routeId}`;
+    }
+
+    function getRouteTypeClass(type) {
+        const typeMap = {
+            'CIRCULATION': 'circular',
+            'ONE_WAY': 'one-way',
+            'ROUND_TRIP_UP': 'round-trip',
+            'ROUND_TRIP_DOWN': 'round-trip'
+        };
+        return typeMap[type] || 'circular';
+    }
+
+    function getRouteTypeText(type) {
+        const typeMap = {
+            'CIRCULATION': '순환',
+            'ONE_WAY': '편도',
+            'ROUND_TRIP_UP': '상행',
+            'ROUND_TRIP_DOWN': '하행'
+        };
+        return typeMap[type] || type;
+    }
+</script>
+</body>
+</html>
