@@ -126,7 +126,7 @@
         if (!statusList || statusList.length === 0) return;
 
         statusList.forEach((busStatus, busIndex) => {
-            const stopId = '1-'+busStatus.currentStop;
+            const stopId = route.id.organizationId +'-'+busStatus.currentStop;
             //const currentStopIndex = busStatus.currentStop;
             const status = busStatus.status;
 
