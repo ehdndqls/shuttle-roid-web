@@ -99,7 +99,7 @@ public class BusController {
             System.out.println(data.getCourseID());
             ds.setCurrentRoute(data.getRouteID());
             ds.setVehicleId(data.getVehicleID());
-            ds.setStatus(DailySchedules.Status.NORMAL);
+            ds.setStatus(DailySchedules.Status.IN_SERVICE);
             ds.setRouteStatus(DailySchedules.RouteStatus.READY);
             dailyScheduleRepository.save(ds);
         }

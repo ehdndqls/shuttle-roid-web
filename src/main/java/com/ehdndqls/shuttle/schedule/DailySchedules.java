@@ -52,9 +52,9 @@ public class DailySchedules {
 
     public enum Status {
         READY,    // 운행 준비
-        NORMAL,   // 정상
+        IN_SERVICE,   // 운행 중
         DELAY,    // 지연
-        TERMINATE // 운행종료
+        COMPLETE // 운행종료
     }
 
     public enum RouteStatus {

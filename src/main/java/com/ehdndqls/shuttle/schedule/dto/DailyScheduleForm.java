@@ -13,8 +13,8 @@ public class DailyScheduleForm {
     private String courseNum;
     private String vehicleNum;
     private String driverName;
-    private String startStop;
-    private String endStop;
+    private String startRoute;
+    private String endRoute;
     private LocalTime startTime;
     private LocalTime endTime;
 
