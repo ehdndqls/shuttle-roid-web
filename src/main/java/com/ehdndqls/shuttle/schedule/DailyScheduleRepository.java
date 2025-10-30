@@ -11,6 +11,7 @@ import java.util.List;
 public interface DailyScheduleRepository extends JpaRepository<DailySchedules, Integer> {
 
     List<DailySchedules> findByDate(LocalDate idDate);
+    List<DailySchedules> findByDateAndOrganizationId(LocalDate idDate, Integer organizationId);
 
     DailySchedules findByDateAndOrganizationIdAndCourseId(LocalDate idDate, Integer organizationId, Integer courseId);
     DailySchedules findByDateAndOrganizationIdAndVehicleId(LocalDate idDate, Integer organizationId, Integer vehicleId);

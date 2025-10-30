@@ -4,7 +4,9 @@ import com.ehdndqls.shuttle.courses.CourseRepository;
 import com.ehdndqls.shuttle.courses.Courses;
 import com.ehdndqls.shuttle.organizations.Organizations;
 import com.ehdndqls.shuttle.organizations.OrganizationsRepository;
+import com.ehdndqls.shuttle.schedule.dto.DailyScheduleForm;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -59,4 +61,21 @@ public class DailyScheduleService {
         return today == DayOfWeek.SATURDAY || today == DayOfWeek.SUNDAY;
     }
 
+    public DailyScheduleForm GetDailySchedule(Integer organizationId){
+        LocalDate today = LocalDate.now();
+        DailyScheduleForm dailyScheduleForm = new DailyScheduleForm();
+        DailySchedules dailySchedules;
+        List<DailySchedules> dailyScheduleList = dailyScheduleRepository.findByDateAndOrganizationId(today, organizationId);
+
+        if(dailyScheduleList != null){
+           for(DailySchedules dailySchedule : dailyScheduleList){
+               //Todo: 여기서 데이터 넣기
+
+           }
+        }
+
+
+
+        return dailyScheduleForm;
+    }
 }

@@ -2,6 +2,7 @@ package com.ehdndqls.shuttle.busserver;
 
 import com.ehdndqls.shuttle.busserver.dto.Location;
 import com.ehdndqls.shuttle.busserver.dto.LoginReq;
+import com.ehdndqls.shuttle.busserver.dto.OrgCheckReq;
 import com.ehdndqls.shuttle.busserver.dto.RouteReport;
 import com.ehdndqls.shuttle.schedule.DailyScheduleRepository;
 import com.ehdndqls.shuttle.schedule.DailySchedules;
@@ -26,15 +27,21 @@ public class BusController {
 
     //임시
     @PostMapping("/bus/org/check")
-    public ResponseEntity<Map<String, String>> check(@RequestBody LoginReq loginReq) {
+    public ResponseEntity<Map<String, String>> check(@RequestBody OrgCheckReq orgCheckReqReq) {
+
+        // Todo: 로그인 부분 데이터 뽑아서 확인 후 반환
+
         return ResponseEntity.ok(Map.of("orgName", "헬로월드"));
     }
 
     // 로그인
     @PostMapping("/bus/auth/login")
-    public  ResponseEntity<Map<String, Integer>> login(@RequestBody LoginReq req) {
+    public  ResponseEntity<Map<String, String>> login(@RequestBody LoginReq req) {
         System.out.println("[Login Request] OrgID: " + req.getOrgID() + ", DriverID: " + req.getDriverID());
-        return ResponseEntity.ok(Map.of("vehicleID", 1));
+        // Todo: 이거 데이터 뽑아서 차량번호 보내기
+        String vehicleNum = "경기12";
+
+        return ResponseEntity.ok(Map.of("vehicleNum", vehicleNum));
     }
 
     // 데이터 업데이트

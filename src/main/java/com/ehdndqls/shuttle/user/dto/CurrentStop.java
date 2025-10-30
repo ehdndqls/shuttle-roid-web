@@ -10,6 +10,6 @@ import lombok.ToString;
 public class CurrentStop {
     private Integer currentStop;
     private String status;
-
+    private String vehicleNum;
 
 }
