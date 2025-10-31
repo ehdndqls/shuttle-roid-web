@@ -5,6 +5,7 @@ import com.ehdndqls.shuttle.busserver.dto.LoginReq;
 import com.ehdndqls.shuttle.busserver.dto.OrgCheckReq;
 import com.ehdndqls.shuttle.busserver.dto.RouteReport;
 import com.ehdndqls.shuttle.schedule.DailyScheduleRepository;
+import com.ehdndqls.shuttle.schedule.DailyScheduleService;
 import com.ehdndqls.shuttle.schedule.DailySchedules;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class BusController {
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private final DailyScheduleRepository dailyScheduleRepository;
+    private final DailyScheduleService dailyScheduleService;
 
     //임시
     @PostMapping("/bus/org/check")
@@ -67,7 +69,7 @@ public class BusController {
                 ", stopID: " + loc.getStopID() +
                 ", status: " + loc.getStatus());
 
-        DailySchedules ds = dailyScheduleRepository.findByDateAndOrganizationIdAndVehicleId(LocalDate.now(), loc.getOrgID(), loc.getVehicleID());
+        DailySchedules ds = dailyScheduleRepository.findByIsHolidayAndOrganizationIdAndVehicleId(dailyScheduleService.isWeekend(), loc.getOrgID(), loc.getVehicleID());
 
 
         ds.setCurrentStop(loc.getStopID());
@@ -92,7 +94,7 @@ public class BusController {
                 ", routeID: " + data.getRouteID() + ", flag: ");
         System.out.println(data.isFlag() ? "Start" : "Terminate");
         System.out.println("data: " + data);
-        DailySchedules ds = dailyScheduleRepository.findByDateAndOrganizationIdAndCourseId(LocalDate.now(), data.getOrgID(), data.getCourseID());
+        DailySchedules ds = dailyScheduleRepository.findByIsHolidayAndOrganizationIdAndCourseId(dailyScheduleService.isWeekend(), data.getOrgID(), data.getCourseID());
 
 
         if(data.isFlag()) {

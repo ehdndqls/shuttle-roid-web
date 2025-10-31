@@ -1,5 +1,6 @@
 package com.ehdndqls.shuttle.schedule.dto;
 
+import com.ehdndqls.shuttle.schedule.DailySchedules;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,6 +18,8 @@ public class DailyScheduleForm {
     private String endRoute;
     private LocalTime startTime;
     private LocalTime endTime;
+    private DailySchedules.Status status;
+    private Boolean isHoliday;
 
     public DailyScheduleForm() {}
 }

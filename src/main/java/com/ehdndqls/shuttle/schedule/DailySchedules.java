@@ -23,8 +23,8 @@ public class DailySchedules {
     // 기관명
     private Integer organizationId;
 
-    // 스케줄 날짜
-    private LocalDate date;
+    // 주말/평일
+    private Boolean isHoliday;
 
     // 코스 엔티티 join 안하고 그냥 Integer 코스키만 저장
     @Column(nullable = false)

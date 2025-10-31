@@ -6,16 +6,17 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DailyScheduleRepository extends JpaRepository<DailySchedules, Integer> {
 
-    List<DailySchedules> findByDate(LocalDate idDate);
-    List<DailySchedules> findByDateAndOrganizationId(LocalDate idDate, Integer organizationId);
 
-    DailySchedules findByDateAndOrganizationIdAndCourseId(LocalDate idDate, Integer organizationId, Integer courseId);
-    DailySchedules findByDateAndOrganizationIdAndVehicleId(LocalDate idDate, Integer organizationId, Integer vehicleId);
-
+    List<DailySchedules> findByIsHolidayAndOrganizationId(Boolean isHoliday, Integer organizationId);
+    List<DailySchedules> findByOrganizationId(Integer organizationId);
+    DailySchedules findByIsHolidayAndOrganizationIdAndCourseId(Boolean isHoliday, Integer organizationId, Integer courseId);
+    DailySchedules findByIsHolidayAndOrganizationIdAndVehicleId(Boolean isHoliday, Integer organizationId, Integer vehicleId);
+    Optional<DailySchedules> findByCourseIdAndOrganizationId(Integer courseId, Integer organizationId);
 
     List<DailySchedules> findByOrganizationIdAndCurrentRoute(Integer organizationId, Integer routeId);
 }
