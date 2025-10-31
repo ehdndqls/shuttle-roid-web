@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스케줄 관리 - Shuttle-roid 운행 관제 시스템</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/schedule.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+  <section class="schedule-section">
+    <div class="section-header">
+      <h2>배차 정보</h2>
+    </div>
+
+    <!-- Added tabs for weekday and holiday schedules -->
+    <div class="schedule-tabs">
+      <button class="tab-button active">평일 스케줄</button>
+    </div>
+
+    <!-- Weekday schedule table -->
+    <div id="weekday-schedule" class="tab-content">
+      <div class="table-container">
+        <table class="schedule-table">
+          <thead>
+          <tr>
+            <th>코스명</th>
+            <th>차량번호</th>
+            <th>운전자</th>
+            <th>시작노선</th>
+            <th>마지막노선</th>
+            <th>출발시간</th>
+            <th>종료시간</th>
+            <th>상태</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="schedule : ${Schedules}">
+            <td th:text="${schedule.courseNum}">101-001</td>
+            <td th:text="${schedule.vehicleNum}">12가3456</td>
+            <td th:text="${schedule.driverName}">홍길동</td>
+            <td th:text="${schedule.startRoute}">순천향대 정문</td>
+            <td th:text="${schedule.endRoute}">아산역</td>
+            <td th:text="${#temporals.format(schedule.startTime, 'HH:mm')}">08:00</td>
+            <td th:text="${#temporals.format(schedule.endTime, 'HH:mm')}">09:30</td>
+            <td>
+                                <span class="status-badge"
+                                      th:classappend="${schedule.status.name() == 'READY'} ? 'status-scheduled' :
+                                                      (${schedule.status.name() == 'IN_PROGRESS'} ? 'status-progress' :
+                                                      (${schedule.status.name() == 'COMPLETED'} ? 'status-completed' : 'status-cancelled'))"
+                                      th:text="${schedule.status.name() == 'READY'} ? '예정' :
+                                               (${schedule.status.name() == 'IN_PROGRESS'} ? '운행중' :
+                                               (${schedule.status.name() == 'COMPLETED'} ? '완료' : '취소'))">
+                                    예정
+                                </span>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(Schedules)}">
+            <td colspan="8" class="empty-message">등록된 평일 스케줄이 없습니다.</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="schedule-tabs">
+      <button class="tab-button active" >주말/공휴일 스케줄</button>
+    </div>
+
+    <!-- Holiday schedule table -->
+    <div id="holiday-schedule" class="tab-content">
+      <div class="table-container">
+        <table class="schedule-table">
+          <thead>
+          <tr>
+            <th>코스명</th>
+            <th>차량번호</th>
+            <th>운전자</th>
+            <th>시작노선</th>
+            <th>마지막노선</th>
+            <th>출발시간</th>
+            <th>종료시간</th>
+            <th>상태</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="schedule : ${HolidaySchedules}">
+            <td th:text="${schedule.courseNum}">101-002</td>
+            <td th:text="${schedule.vehicleNum}">12가7890</td>
+            <td th:text="${schedule.driverName}">김철수</td>
+            <td th:text="${schedule.startRoute}">순천향대 정문</td>
+            <td th:text="${schedule.endRoute}">아산역</td>
+            <td th:text="${#temporals.format(schedule.startTime, 'HH:mm')}">09:00</td>
+            <td th:text="${#temporals.format(schedule.endTime, 'HH:mm')}">10:30</td>
+            <td>
+                                <span class="status-badge"
+                                      th:classappend="${schedule.status.name() == 'READY'} ? 'status-scheduled' :
+                                                      (${schedule.status.name() == 'IN_PROGRESS'} ? 'status-progress' :
+                                                      (${schedule.status.name() == 'COMPLETED'} ? 'status-completed' : 'status-cancelled'))"
+                                      th:text="${schedule.status.name() == 'READY'} ? '예정' :
+                                               (${schedule.status.name() == 'IN_PROGRESS'} ? '운행중' :
+                                               (${schedule.status.name() == 'COMPLETED'} ? '완료' : '취소'))">
+                                    예정
+                                </span>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(HolidaySchedules)}">
+            <td colspan="8" class="empty-message">등록된 주말/공휴일 스케줄이 없습니다.</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+<footer th:replace="~{ footer.html::footer }"></footer>
+
+<script>
+  function switchTab(tabName) {
+    // Remove active class from all tabs and contents
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+    // Add active class to selected tab and content
+    if (tabName === 'weekday') {
+      document.querySelector('.tab-button:first-child').classList.add('active');
+      document.getElementById('weekday-schedule').classList.add('active');
+    } else {
+      document.querySelector('.tab-button:last-child').classList.add('active');
+      document.getElementById('holiday-schedule').classList.add('active');
+    }
+  }
+</script>
+
+</body>
+</html>

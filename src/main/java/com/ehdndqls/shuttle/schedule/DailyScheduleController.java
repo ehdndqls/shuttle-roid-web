@@ -42,7 +42,6 @@ public class DailyScheduleController {
     @GetMapping("/testSchedule")
     public String testSchedule() {
         dailyScheduleService.updateSchedule();
-
         return "redirect:/";
     }
 
