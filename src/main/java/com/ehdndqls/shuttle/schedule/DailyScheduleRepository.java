@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface DailyScheduleRepository extends JpaRepository<DailySchedules, Integer> {
 
 
+    Optional<DailySchedules> findByScheduleId(Integer scheduleId);
     List<DailySchedules> findByIsHolidayAndOrganizationId(Boolean isHoliday, Integer organizationId);
     List<DailySchedules> findByOrganizationId(Integer organizationId);
     DailySchedules findByIsHolidayAndOrganizationIdAndCourseId(Boolean isHoliday, Integer organizationId, Integer courseId);

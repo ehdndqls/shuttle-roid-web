@@ -42,6 +42,9 @@ public class DailySchedules {
     // 현재 정류소 정보
     private Integer currentStop;
 
+    private Integer currentStopIndex;         // 코스 내 루트 인덱스
+    private Integer currentStopIndexInRoute;  // 루트 내 정류소 인덱스
+
     @Enumerated(EnumType.STRING) // Enum을 문자열로 저장
     @Column(nullable = false)
     private Status status;
@@ -66,6 +69,8 @@ public class DailySchedules {
 
     @PrePersist
     public void prePersist() {
+        if (currentStopIndex == null) { currentStopIndex = 0; }
+        if (currentStopIndexInRoute == null) { currentStopIndexInRoute = 0; }
         if (status == null) status = Status.READY;
         if (routeStatus == null) routeStatus = RouteStatus.READY;
         if(currentStop == null) currentStop = 0;

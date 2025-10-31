@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface VehiclesRepository extends JpaRepository<Vehicles, Integer> {
 
+    List<Vehicles> findByOrganizationId(Integer organizationId);
     Page<Vehicles> findByOrganizationId(Integer organizationId, Pageable pageable);
 
     @Query("SELECT v FROM Vehicles v WHERE " +

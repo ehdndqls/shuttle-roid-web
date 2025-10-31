@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface  DriversRepository extends JpaRepository<Drivers, Integer> {
     Page<Drivers> findByOrganizationId(Integer organizationId, Pageable pageable);
+    List<Drivers> findByOrganizationId(Integer organizationId);
 
 
     @Query("SELECT d FROM Drivers d WHERE " +

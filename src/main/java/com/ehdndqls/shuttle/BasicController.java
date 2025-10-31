@@ -28,13 +28,13 @@ public class BasicController {
     }
 
 
-    @GetMapping("/")
-    String start(Authentication auth) {
-        if(auth != null && auth.isAuthenticated())
-            return "main.html";
-        else
-            return "login.html";
-    }
+//    @GetMapping("/")
+//    String start(Authentication auth) {
+//        if(auth != null && auth.isAuthenticated())
+//            return "main.html";
+//        else
+//            return "login.html";
+//    }
 
     @GetMapping("/about")
     String about(){

@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @Setter
 @ToString
 public class DailyScheduleForm {
+    private Integer scheduleId;
     private String courseNum;
     private String vehicleNum;
     private String driverName;

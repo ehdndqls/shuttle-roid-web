@@ -22,40 +22,6 @@
             </div>
         </div>
 
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-bus"></i></div>
-                <div class="stat-info">
-                    <h3>운행 대수</h3>
-                    <p class="stat-value">24<span class="stat-unit">대</span></p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-route"></i></div>
-                <div class="stat-info">
-                    <h3>운행 노선</h3>
-                    <p class="stat-value">12<span class="stat-unit">개</span></p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-user-friends"></i></div>
-                <div class="stat-info">
-                    <h3>탑승 인원</h3>
-                    <p class="stat-value">342<span class="stat-unit">명</span></p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                <div class="stat-info">
-                    <h3>지연 발생</h3>
-                    <p class="stat-value">2<span class="stat-unit">건</span></p>
-                </div>
-            </div>
-        </div>
-
         <div class="operation-table">
             <h3>실시간 운행 현황</h3>
             <table>
@@ -68,50 +34,34 @@
                     <th>이전정류소</th>
                     <th>현재정류소</th>
                     <th>다음정류소</th>
-                    <th>도착예정</th>
                     <th>상태</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>A-01</td>
-                    <td>서울 12가 3456</td>
-                    <td>김기사</td>
-                    <td>강남역</td>
-                    <td>판교역</td>
-                    <td>08:30</td>
-                    <td>09:15</td>
-                    <td class="status on-time">정상</td>
+                <tr th:each="realTime : ${RealTimeOpr}">
+                    <td th:text="${realTime.courseName}">코스명</td>
+                    <td th:text="${realTime.vehicleNum}">차량번호</td>
+                    <td th:text="${realTime.driverName}">기사명</td>
+                    <td th:text="${realTime.currentRoute}">현재노선명</td>
+                    <td th:text="${realTime.previousStop}">이전정류소</td>
+                    <td th:text="${realTime.currentStop}">현재정류소</td>
+                    <td th:text="${realTime.nextStop}">다음정류소</td>
+                    <td>
+                        <span class="status"
+                              th:classappend="${realTime.routeStatus.name() == 'DEPARTURE'} ? 'departure' :
+                                             (${realTime.routeStatus.name() == 'APPROACH'} ? 'approach' :
+                                             (${realTime.routeStatus.name() == 'ARRIVAL'} ? 'arrival' : 'ready'))"
+                              th:text="${realTime.routeStatus.name() == 'DEPARTURE'} ? '출발' :
+                                       (${realTime.routeStatus.name() == 'APPROACH'} ? '접근' :
+                                       (${realTime.routeStatus.name() == 'ARRIVAL'} ? '도착' : '운행준비'))">
+                            상태
+                        </span>
+                    </td>
                 </tr>
-                <tr>
-                    <td>B-02</td>
-                    <td>경기 45나 6789</td>
-                    <td>이기사</td>
-                    <td>광화문</td>
-                    <td>일산</td>
-                    <td>08:45</td>
-                    <td>09:45</td>
-                    <td class="status delayed">지연</td>
-                </tr>
-                <tr>
-                    <td>C-03</td>
-                    <td>서울 78다 1234</td>
-                    <td>박기사</td>
-                    <td>잠실역</td>
-                    <td>구로역</td>
-                    <td>09:00</td>
-                    <td>09:50</td>
-                    <td class="status on-time">정상</td>
-                </tr>
-                <tr>
-                    <td>D-04</td>
-                    <td>경기 56라 7890</td>
-                    <td>최기사</td>
-                    <td>수원역</td>
-                    <td>강남역</td>
-                    <td>09:15</td>
-                    <td>10:15</td>
-                    <td class="status on-time">정상</td>
+                <tr th:if="${#lists.isEmpty(RealTimeOpr)}">
+                    <td colspan="8" style="text-align: center; padding: 2rem; color: #999;">
+                        현재 운행 중인 차량이 없습니다.
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -133,75 +83,38 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>A-01</td>
-                    <td>서울 12가 3456</td>
-                    <td>김기사</td>
-                    <td>강남역</td>
-                    <td>판교역</td>
-                    <td>08:30</td>
-                    <td>09:15</td>
-                    <td class="status on-time">정상</td>
+                <tr th:each="schedule : ${DailySchedules}">
+                    <td th:text="${schedule.courseNum}">코스번호</td>
+                    <td th:text="${schedule.vehicleNum}">차량번호</td>
+                    <td th:text="${schedule.driverName}">기사명</td>
+                    <td th:text="${schedule.startRoute}">출발노선</td>
+                    <td th:text="${schedule.endRoute}">마지막노선</td>
+                    <td th:text="${#temporals.format(schedule.startTime, 'HH:mm')}">출발시간</td>
+                    <td th:text="${#temporals.format(schedule.endTime, 'HH:mm')}">종료예정</td>
+                    <td>
+                        <span class="status"
+                              th:classappend="${schedule.status.name() == 'SCHEDULED'} ? 'scheduled' :
+                                             (${schedule.status.name() == 'IN_PROGRESS'} ? 'on-time' :
+                                             (${schedule.status.name() == 'COMPLETED'} ? 'completed' : 'cancelled'))"
+                              th:text="${schedule.status.name() == 'READY'} ? '예정' :
+                                       (${schedule.status.name() == 'IN_PROGRESS'} ? '운행중' :
+                                       (${schedule.status.name() == 'COMPLETED'} ? '완료' : '취소'))">
+                            상태
+                        </span>
+                    </td>
                 </tr>
-                <tr>
-                    <td>B-02</td>
-                    <td>경기 45나 6789</td>
-                    <td>이기사</td>
-                    <td>광화문</td>
-                    <td>일산</td>
-                    <td>08:45</td>
-                    <td>09:45</td>
-                    <td class="status delayed">지연</td>
-                </tr>
-                <tr>
-                    <td>C-03</td>
-                    <td>서울 78다 1234</td>
-                    <td>박기사</td>
-                    <td>잠실역</td>
-                    <td>구로역</td>
-                    <td>09:00</td>
-                    <td>09:50</td>
-                    <td class="status on-time">정상</td>
-                </tr>
-                <tr>
-                    <td>D-04</td>
-                    <td>경기 56라 7890</td>
-                    <td>최기사</td>
-                    <td>수원역</td>
-                    <td>강남역</td>
-                    <td>09:15</td>
-                    <td>10:15</td>
-                    <td class="status on-time">정상</td>
+                <tr th:if="${#lists.isEmpty(DailySchedules)}">
+                    <td colspan="8" style="text-align: center; padding: 2rem; color: #999;">
+                        금일 배차 정보가 없습니다.
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </section>
 
-<!--
-<main>
-    <h2>운행 중인 실시간 차량 정보</h2>
-    <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-        <tr>
-            <th>스케줄 ID</th>
-            <th>현재 정류장</th>
-            <th>상태</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        <tr th:each="fleet : ${realTimeList}">
-            <td th:text="${fleet.dailyScheduleId}">2</td>
-            <td th:text="${fleet.currentStop}">운행시작</td>
-            <td th:text="${fleet.status}">DEPARTURE</td>
-        </tr>
-        </tbody>
-    </table>
     <aside th:replace="~{ aside.html::aside }"></aside>
-    -->
 </main>
-
 
 <footer th:replace="~{ footer.html::footer}"></footer>
 
@@ -217,7 +130,10 @@
             hour: '2-digit',
             minute: '2-digit'
         };
-        document.getElementById('datetime').textContent = now.toLocaleDateString('ko-KR', options);
+        const datetimeElement = document.getElementById('datetime');
+        if (datetimeElement) {
+            datetimeElement.textContent = now.toLocaleDateString('ko-KR', options);
+        }
     }
 
     // 페이지 로드 시 시간 표시 및 1분마다 업데이트

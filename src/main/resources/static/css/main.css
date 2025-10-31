@@ -238,6 +238,21 @@ table tr:hover {
     color: #c62828;
 }
 
+.status.departure {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status.arrival {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status.approach {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
 /* 날씨 위젯 스타일 */
 .weather-widget {
     width: 300px;
