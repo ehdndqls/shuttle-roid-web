@@ -18,6 +18,6 @@ public interface DailyScheduleRepository extends JpaRepository<DailySchedules, I
     DailySchedules findByIsHolidayAndOrganizationIdAndCourseId(Boolean isHoliday, Integer organizationId, Integer courseId);
     DailySchedules findByIsHolidayAndOrganizationIdAndVehicleId(Boolean isHoliday, Integer organizationId, Integer vehicleId);
     Optional<DailySchedules> findByCourseIdAndOrganizationId(Integer courseId, Integer organizationId);
-
+    Optional<DailySchedules> findByDriverIdAndOrganizationId(Integer driverId, Integer organizationId);
     List<DailySchedules> findByOrganizationIdAndCurrentRoute(Integer organizationId, Integer routeId);
 }

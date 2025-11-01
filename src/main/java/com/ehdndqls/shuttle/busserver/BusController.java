@@ -4,11 +4,16 @@ import com.ehdndqls.shuttle.busserver.dto.Location;
 import com.ehdndqls.shuttle.busserver.dto.LoginReq;
 import com.ehdndqls.shuttle.busserver.dto.OrgCheckReq;
 import com.ehdndqls.shuttle.busserver.dto.RouteReport;
+import com.ehdndqls.shuttle.organizations.Organizations;
+import com.ehdndqls.shuttle.organizations.OrganizationsRepository;
 import com.ehdndqls.shuttle.schedule.DailyScheduleRepository;
 import com.ehdndqls.shuttle.schedule.DailyScheduleService;
 import com.ehdndqls.shuttle.schedule.DailySchedules;
+import com.ehdndqls.shuttle.vehicles.Vehicles;
+import com.ehdndqls.shuttle.vehicles.VehiclesRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,14 +32,20 @@ public class BusController {
     private static final ObjectMapper mapper = new ObjectMapper();
     private final DailyScheduleRepository dailyScheduleRepository;
     private final DailyScheduleService dailyScheduleService;
+    private final OrganizationsRepository organizationsRepository;
+    private final VehiclesRepository vehiclesRepository;
 
     //임시
     @PostMapping("/bus/org/check")
     public ResponseEntity<Map<String, String>> check(@RequestBody OrgCheckReq orgCheckReqReq) {
-
-        // Todo: 로그인 부분 데이터 뽑아서 확인 후 반환
-
-        return ResponseEntity.ok(Map.of("orgName", "헬로월드"));
+        Optional<Organizations> OptOrg;
+        OptOrg = organizationsRepository.findByOrganizationId(orgCheckReqReq.getOrgID());
+        if (OptOrg.isPresent()) {
+            Organizations Org = OptOrg.get();
+            return ResponseEntity.ok(Map.of("orgName", Org.getOrganizationName()));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Organization not found"));
     }
 
     // 로그인
@@ -41,11 +53,23 @@ public class BusController {
     public  ResponseEntity<Map<String, String>> login(@RequestBody LoginReq req) {
         System.out.println("[Login Request] OrgID: " + req.getOrgID() + ", DriverID: " + req.getDriverID());
         // Todo: 이거 데이터 뽑아서 차량번호 보내기
-        String vehicleNum = "경기12";
+        Optional<DailySchedules> OptSchedule;
+        OptSchedule = dailyScheduleRepository.findByDriverIdAndOrganizationId(req.getDriverID(), req.getOrgID());
+        if (OptSchedule.isPresent()) {
+            DailySchedules ds = OptSchedule.get();
+            Optional<Vehicles> OptVehicle = vehiclesRepository.findById(ds.getVehicleId());
+            if (OptVehicle.isPresent()) {
+                return ResponseEntity.ok(Map.of("vehicleNum", OptVehicle.get().getVehicleNumber()));
+            } else
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Vehicle not found"));
+        }
 
-        return ResponseEntity.ok(Map.of("vehicleNum", vehicleNum));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Schedule not found"));
     }
 
+    // Todo: 여기부터 하시면 됩니당
     // 데이터 업데이트
     @GetMapping("/bus/update")
     @ResponseBody
