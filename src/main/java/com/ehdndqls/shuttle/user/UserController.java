@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
@@ -48,8 +49,29 @@ public class UserController {
         return "user-route-detail.html";
     }
 
+    @GetMapping("/user/route-list")
+    @ResponseBody
+    public List<Map<String, Object>> routeList(@RequestParam int orgID) {
+        List<Routes> routes = routesRepository.findById_OrganizationId(orgID);
+
+        List<Map<String, Object>> routeData = new ArrayList<>();
+
+        for (Routes r : routes) {
+            Map<String, Object> routeMap = new HashMap<>();
+            routeMap.put("routeId", r.getId().getRouteId());          // 복합키에서 routeId
+            routeMap.put("routeNumber", r.getRouteNum());            // 노선 번호
+            routeMap.put("routeTitle", r.getRouteName());            // 노선 이름
+            routeMap.put("routeType", r.getRouteType().toString());  // RouteType 문자열
+            routeMap.put("estimatedTime", r.getEstimatedTime());    // 예상 소요 시간
+            routeData.add(routeMap);
+        }
+
+        return routeData;
+    }
+
     @GetMapping("/user/meta")
-    public Map<String, Object> getMeta(Integer orgID, Integer routeID) {
+    @ResponseBody
+    public Map<String, Object> getMeta(@RequestParam Integer orgID, @RequestParam Integer routeID) {
         Routes route = routesRepository.findById(new RouteId(orgID, routeID))
                 .orElseThrow(() -> new NoSuchElementException("Route not found"));
 
@@ -66,7 +88,8 @@ public class UserController {
 
     // 2. /user/stops
     @GetMapping("/user/stops")
-    public List<Map<String, Object>> getStops(Integer orgID, Integer routeID) {
+    @ResponseBody
+    public List<Map<String, Object>> getStops(@RequestParam Integer orgID, @RequestParam Integer routeID) {
         // DB에서 route 조회
         Routes route = routesRepository.findById(new RouteId(orgID, routeID))
                 .orElseThrow(() -> new NoSuchElementException("Route not found"));
@@ -85,8 +108,9 @@ public class UserController {
     }
 
     // 3. /user/vehicles
+    @ResponseBody
     @GetMapping("/user/vehicles")
-    public List<Map<String, Object>> getVehicles(Integer orgID, Integer routeID) {
+    public List<Map<String, Object>> getVehicles(@RequestParam Integer orgID, @RequestParam Integer routeID) {
 
         List<DailySchedules> dailySchedules = dailyScheduleRepository
                 .findByOrganizationIdAndCurrentRoute(orgID, routeID);
@@ -99,7 +123,7 @@ public class UserController {
 
         for (DailySchedules ds : dailySchedules) {
             Map<String, Object> vehicle = new HashMap<>();
-            vehicle.put("stopId", orgID+'-'+ds.getCurrentStop());        // 정류장 ID
+            vehicle.put("stopId", String.valueOf(orgID)+'-'+ds.getCurrentStop());        // 정류장 ID
             vehicle.put("vehicleNo", vehiclesRepository.findById(ds.getVehicleId()).get().getVehicleNumber());  // 차량 번호
             vehicle.put("status", ds.getRouteStatus());
             vehicles.add(vehicle);

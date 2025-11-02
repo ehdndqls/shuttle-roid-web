@@ -101,6 +101,7 @@ public class BusController {
 
     // 위치 이벤트
     @PostMapping("/bus/location")
+    @ResponseBody
     public ResponseEntity<Map<String, Boolean>> location(@RequestBody Location loc) {
         System.out.println("[Location Event] vehicleID: " + loc.getVehicleID() +
                 ", stopID: " + loc.getStopID() +
@@ -121,6 +122,7 @@ public class BusController {
 
 
     @PostMapping("/bus/route/start")
+    @ResponseBody
     public ResponseEntity<Map<String, Boolean>> routeStart(@RequestBody RouteReport data) {
         System.out.print("[Start Drive] vehicleID: " + data.getVehicleID() +
                 ", routeID: " + data.getRouteID() + ", flag: ");
