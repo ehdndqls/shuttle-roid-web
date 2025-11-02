@@ -122,7 +122,7 @@
           <tbody>
           <tr th:each="schedule : ${HolidaySchedules}">
             <td>
-              <input type="hidden" class="schedule-id" th:value="${HolidaySchedules.scheduleId}" />
+              <input type="hidden" class="schedule-id" th:value="${schedule.scheduleId}" />
               <span th:text="${schedule.courseNum}">101-002</span>
             </td>
             <!-- 차량번호 select -->
@@ -162,6 +162,13 @@
                                     예정
                                 </span>
             </td>
+
+            <!-- 수정 버튼 -->
+            <td>
+              <button class="edit-btn">수정</button>
+              <button class="save-btn" style="display:none;">저장</button>
+            </td>
+
           </tr>
           <tr th:if="${#lists.isEmpty(HolidaySchedules)}">
             <td colspan="8" class="empty-message">등록된 주말/공휴일 스케줄이 없습니다.</td>
@@ -225,6 +232,19 @@
 </script>
 
 <script>
+
+  // ------------------------
+  // 날짜/시간 표시
+  // ------------------------
+  function updateDateTime() {
+    const now = new Date();
+    const options = { year:'numeric', month:'long', day:'numeric', weekday:'long', hour:'2-digit', minute:'2-digit' };
+    const datetimeElement = document.getElementById('datetime');
+    if (datetimeElement) datetimeElement.textContent = now.toLocaleDateString('ko-KR', options);
+  }
+  updateDateTime();
+  setInterval(updateDateTime, 60000);
+
   function switchTab(tabName) {
     // Remove active class from all tabs and contents
     document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));

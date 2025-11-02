@@ -75,7 +75,6 @@ public class BusController {
                 .body(Map.of("error", "Schedule not found"));
     }
 
-    // Todo: 여기부터 하시면 됩니당 업데이트 버전 설정하고 저장
     // 데이터 업데이트
     @GetMapping("/bus/update")
     @ResponseBody

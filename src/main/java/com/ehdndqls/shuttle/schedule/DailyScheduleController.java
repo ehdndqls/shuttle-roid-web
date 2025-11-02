@@ -29,6 +29,8 @@ public class DailyScheduleController {
     public String Home(Model model, Authentication auth) {
         model.addAttribute("DailySchedules", dailyScheduleService.GetDailySchedule(organizationsService.getOrganizationId(auth)));
         model.addAttribute("RealTimeOpr", dailyScheduleService.GetRealTimeBusOperation(organizationsService.getOrganizationId(auth)));
+        System.out.println("DailySchedules"+dailyScheduleService.GetDailySchedule(organizationsService.getOrganizationId(auth)));
+        System.out.println("RealTimeOpr"+dailyScheduleService.GetRealTimeBusOperation(organizationsService.getOrganizationId(auth)));
 
         return "main.html";
     }

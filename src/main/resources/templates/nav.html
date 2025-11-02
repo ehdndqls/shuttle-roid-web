@@ -3,9 +3,6 @@
     <li th:classappend="${#strings.equals(currentUri, '/') ? 'active' : ''}">
       <a href="/"><i class="fas fa-home"></i> 홈</a>
     </li>
-    <li th:classappend="${#strings.startsWith(currentUri, '/course') ? 'active' : ''}">
-      <a href="/course"><i class="fas fa-bus"></i> 운행 관리</a>
-    </li>
     <li th:classappend="${#strings.startsWith(currentUri, '/schedule') ? 'active' : ''}">
       <a href="/schedule"><i class="fas fa-clipboard-list"></i> 배차 작성</a>
     </li>
@@ -21,8 +18,11 @@
     <li th:classappend="${#strings.startsWith(currentUri, '/routes') ? 'active' : ''}">
       <a href="/routes"><i class="fas fa-route"></i> 노선관리</a>
     </li>
+    <li th:classappend="${#strings.startsWith(currentUri, '/course') ? 'active' : ''}">
+      <a href="/course"><i class="fas fa-bus"></i> 코스 생성</a>
+    </li>
     <li th:classappend="${#strings.startsWith(currentUri, '/message') ? 'active' : ''}">
-      <a href="/message"><i class="fas fa-envelope"></i> 메세지 발송</a>
+      <a href="/#"><i class="fas fa-envelope"></i> 메세지 발송</a>
     </li>
   </ul>
 </nav>

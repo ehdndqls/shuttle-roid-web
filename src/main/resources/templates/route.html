@@ -304,6 +304,18 @@
             document.getElementById('selectedRouteName').textContent = '노선을 선택해주세요';
         }
     }
+
+    // ------------------------
+    // 날짜/시간 표시
+    // ------------------------
+    function updateDateTime() {
+        const now = new Date();
+        const options = { year:'numeric', month:'long', day:'numeric', weekday:'long', hour:'2-digit', minute:'2-digit' };
+        const datetimeElement = document.getElementById('datetime');
+        if (datetimeElement) datetimeElement.textContent = now.toLocaleDateString('ko-KR', options);
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
 </script>
 </body>
 </html>
