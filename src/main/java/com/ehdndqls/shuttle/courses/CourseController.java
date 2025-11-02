@@ -62,6 +62,7 @@ public class CourseController {
     public String modifyRoute(@ModelAttribute CourseDto courseForm, Authentication auth) {
         Integer organizationId = organizationsService.getOrganizationId(auth);
         courseService.modify(courseForm, organizationId);
+        organizationsService.setUpdateFlag(organizationId);
         return "redirect:/course";
     }
 

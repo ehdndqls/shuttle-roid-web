@@ -48,6 +48,7 @@ public class RoutesController {
     public String modifyRoute(@ModelAttribute RouteDto routeForm, Authentication auth) {
         Integer organizationId = organizationsService.getOrganizationId(auth);
         routesService.modify(routeForm, organizationId);
+        organizationsService.setUpdateFlag(organizationId);
         return "redirect:/routes";
     }
 

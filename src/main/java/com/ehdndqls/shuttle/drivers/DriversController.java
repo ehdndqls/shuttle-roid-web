@@ -52,6 +52,7 @@ public class DriversController {
     public String modifyDriver(@ModelAttribute DriverDto driverForm, Authentication auth) {
         Integer id = organizationsService.getOrganizationId(auth);
         driversService.modify(driverForm, id);
+        organizationsService.setUpdateFlag(id);
         return "redirect:/driver/page/1";
     }
 

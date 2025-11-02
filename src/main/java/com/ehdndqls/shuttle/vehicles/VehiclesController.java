@@ -53,6 +53,7 @@ public class VehiclesController {
         Integer id = organizationsService.getOrganizationId(auth);
         vehiclesService.modify(vehicleForm, id);
         System.out.println(vehicleForm);
+        organizationsService.setUpdateFlag(id);
         return "redirect:/vehicle/page/1";
     }
 
