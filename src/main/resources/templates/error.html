@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오류 - Shuttle-roid 운행 관제 시스템</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/error.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header th:replace="~{ header.html::header }"></header>
+<nav th:replace="~{ nav.html::navbar }"></nav>
+
+<main>
+  <section class="error-section">
+    <div class="error-container">
+      <div class="error-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+
+      <h1 class="error-title" th:text="${error} ?: '오류가 발생했습니다'">오류가 발생했습니다</h1>
+
+      <p class="error-message" th:text="${message} ?: '요청을 처리하는 중 문제가 발생했습니다.'">
+        요청을 처리하는 중 문제가 발생했습니다.
+      </p>
+
+      <div class="error-details" th:if="${status}">
+        <span class="error-code" th:text="'오류 코드: ' + ${status}">오류 코드: 500</span>
+      </div>
+
+      <div class="error-actions">
+        <button class="btn btn-primary" onclick="location.href='/'">
+          <i class="fas fa-home"></i> 홈으로 돌아가기
+        </button>
+        <button class="btn btn-secondary" onclick="history.back()">
+          <i class="fas fa-arrow-left"></i> 이전 페이지
+        </button>
+      </div>
+
+      <div class="error-help">
+        <p>문제가 계속되면 시스템 관리자에게 문의하세요.</p>
+      </div>
+    </div>
+  </section>
+
+  <aside th:replace="~{ aside.html::aside }"></aside>
+</main>
+
+<footer th:replace="~{ footer.html::footer }"></footer>
+
+</body>
+</html>
