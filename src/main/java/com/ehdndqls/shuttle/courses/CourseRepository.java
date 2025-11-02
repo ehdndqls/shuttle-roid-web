@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends JpaRepository<Courses, CourseId> {
     Page<Courses> findById_OrganizationId(Integer organizationId, Pageable pageable);
+    List<Courses> findById_OrganizationId(Integer organizationId);
 
     @Query("SELECT MAX(c.id.courseId) FROM Courses c WHERE c.id.organizationId = :organizationId")
     Integer findMaxCourseIdByOrganizationId(@Param("organizationId") Integer organizationId);

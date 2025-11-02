@@ -2,9 +2,17 @@ package com.ehdndqls.shuttle.busserver;
 
 import com.ehdndqls.shuttle.busstop.BusStops;
 import com.ehdndqls.shuttle.busstop.BusStopsRepository;
+import com.ehdndqls.shuttle.courses.CourseId;
+import com.ehdndqls.shuttle.courses.CourseRepository;
+import com.ehdndqls.shuttle.courses.Courses;
+import com.ehdndqls.shuttle.courses.RouteDetail;
+import com.ehdndqls.shuttle.organizations.OrganizationsRepository;
+import com.ehdndqls.shuttle.organizations.OrganizationsService;
 import com.ehdndqls.shuttle.routes.Routes;
 import com.ehdndqls.shuttle.routes.RoutesRepository;
 import com.ehdndqls.shuttle.routes.StopDetail;
+import com.ehdndqls.shuttle.schedule.DailyScheduleRepository;
+import com.ehdndqls.shuttle.schedule.DailySchedules;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -24,6 +29,10 @@ import java.util.stream.Collectors;
 public class BusService {
     private final BusStopsRepository busStopsRepository;
     private final RoutesRepository routesRepository;
+    private final CourseRepository courseRepository;
+    private final DailyScheduleRepository dailyScheduleRepository;
+    private final OrganizationsService organizationsService;
+    private final OrganizationsRepository organizationsRepository;
 
     public Map<String, Object> getBusData(Integer organizationId) {
 
@@ -68,39 +77,44 @@ public class BusService {
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("organizationId", organizationId);
-        // Todo: updateVersion
-        result.put("updateVersion", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd01")));
+        result.put("updateVersion", organizationsRepository.findByOrganizationId(organizationId).get().getUpdateVersion());
         result.put("stopList", stopList);
         result.put("routeList", routeList);
 
         return result;
     }
 
-//    public ObjectNode convertToStopIdJson(List<StopDetail> stopList) {
-//        ObjectNode routeJson = objectMapper.createObjectNode();
-//        ArrayNode stopIds = objectMapper.createArrayNode();
-//
-//
-//        for (StopDetail s : stopList) {
-//            // "1-9001" → [orgId=1, stopId=9001]
-//            String[] parts = s.getId().split("-");
-//            if (parts.length == 2) {
-//                try {
-//                    int orgId = Integer.parseInt(parts[0]);
-//                    int stopId = Integer.parseInt(parts[1]);
-//
-//                    // ID 조합: orgId(3자리) + stopId(4자리)
-//                    long combinedId = Long.parseLong(String.format("%03d%04d", orgId, stopId));
-//                    stopIds.add(combinedId);
-//                } catch (NumberFormatException e) {
-//                    // 파싱 실패 시 무시 (로그만 남기기)
-//                    System.err.println("Invalid stop id format: " + s.getId());
-//                }
-//            }
-//        }
-//
-//        routeJson.set("stopIds", stopIds);
-//        return routeJson;
-//    }
+    public List<Map<String, Object>> getCourseData(CourseId id) {
+
+        Optional<Courses> optCourse = courseRepository.findById(id);
+
+        if (optCourse.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Courses course = optCourse.get();
+
+        List<Map<String, Object>> departureList = new ArrayList<>();
+
+
+        for(RouteDetail r : course.getRouteList()) {
+            // routeId가 0이거나 startTime이 없는 경우 스킵 -- 휴식이 routeId가 0으로 지정되어있음
+            if(r.getRouteId() == null || r.getRouteId() == 0) continue;
+            if(r.getStartTime() == null) continue;
+
+            Map<String, Object> routeJson = new LinkedHashMap<>();
+            routeJson.put("routeID", r.getRouteId().toString());
+            routeJson.put("departureTime", r.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+
+            departureList.add(routeJson);
+
+        }
+        return departureList;
+    }
+
+    public CourseId findCourseId(Integer organizationId, Integer driverId) {
+        DailySchedules schedules = dailyScheduleRepository.findByOrganizationIdAndDriverId(organizationId, driverId);
+        return new CourseId(organizationId, schedules.getCourseId());
+    }
 }
 

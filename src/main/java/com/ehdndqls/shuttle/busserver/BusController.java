@@ -4,8 +4,11 @@ import com.ehdndqls.shuttle.busserver.dto.Location;
 import com.ehdndqls.shuttle.busserver.dto.LoginReq;
 import com.ehdndqls.shuttle.busserver.dto.OrgCheckReq;
 import com.ehdndqls.shuttle.busserver.dto.RouteReport;
+import com.ehdndqls.shuttle.courses.CourseId;
+import com.ehdndqls.shuttle.courses.CourseRepository;
 import com.ehdndqls.shuttle.organizations.Organizations;
 import com.ehdndqls.shuttle.organizations.OrganizationsRepository;
+import com.ehdndqls.shuttle.organizations.OrganizationsService;
 import com.ehdndqls.shuttle.schedule.DailyScheduleRepository;
 import com.ehdndqls.shuttle.schedule.DailyScheduleService;
 import com.ehdndqls.shuttle.schedule.DailySchedules;
@@ -34,6 +37,9 @@ public class BusController {
     private final DailyScheduleService dailyScheduleService;
     private final OrganizationsRepository organizationsRepository;
     private final VehiclesRepository vehiclesRepository;
+    private final OrganizationsService organizationsService;
+    private final BusService busService;
+    private final CourseRepository courseRepository;
 
     //임시
     @PostMapping("/bus/org/check")
@@ -52,7 +58,7 @@ public class BusController {
     @PostMapping("/bus/auth/login")
     public  ResponseEntity<Map<String, String>> login(@RequestBody LoginReq req) {
         System.out.println("[Login Request] OrgID: " + req.getOrgID() + ", DriverID: " + req.getDriverID());
-        // Todo: 이거 데이터 뽑아서 차량번호 보내기
+
         Optional<DailySchedules> OptSchedule;
         OptSchedule = dailyScheduleRepository.findByDriverIdAndOrganizationId(req.getDriverID(), req.getOrgID());
         if (OptSchedule.isPresent()) {
@@ -69,13 +75,17 @@ public class BusController {
                 .body(Map.of("error", "Schedule not found"));
     }
 
-    // Todo: 여기부터 하시면 됩니당
+    // Todo: 여기부터 하시면 됩니당 업데이트 버전 설정하고 저장
     // 데이터 업데이트
     @GetMapping("/bus/update")
     @ResponseBody
     public Object update(@RequestParam int orgID, @RequestParam int dataVer) throws IOException {
         System.out.println("[Update Request] OrgID: " + orgID + ", DataVer: " + dataVer);
-        return readJson("src/main/resources/data.json");
+        if(organizationsService.checkUpdateFlag(orgID, String.valueOf(dataVer))){
+            return busService.getBusData(orgID);
+        }
+        else
+            return Map.of("최신상태", dataVer);
     }
 
     // 스케줄 요청
@@ -83,7 +93,11 @@ public class BusController {
     @ResponseBody
     public Object schedule(@RequestParam int orgID, @RequestParam int driverID) throws IOException {
         System.out.println("[Scheduling Request] OrgID: " + orgID + ", DriverID: " + driverID);
-        return readJson("src/main/resources/101001.json");
+        CourseId courseId = busService.findCourseId(orgID, driverID);
+        if(courseId == null)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND);
+
+        return busService.getCourseData(courseId);
     }
 
     // 위치 이벤트
@@ -98,6 +112,7 @@ public class BusController {
 
         ds.setCurrentStop(loc.getStopID());
         ds.setRouteStatus(DailySchedules.RouteStatus.valueOf(loc.getStatus().toUpperCase()));
+        ds.setCurrentStopIndex(ds.getCurrentStopIndex() + 1);
         dailyScheduleRepository.save(ds);
 
 
@@ -105,13 +120,7 @@ public class BusController {
     }
 
 
-    // 노선 시작/종료 이벤트
-    /*
-    // 시작 시 첫번째 노선 자동 할당
-    // 이 후 갱신하다가
-    // 종료 요청이 들어오면 다음 노선이 있나 확인하고
-    // 없으면 코스 종료
-     */
+
     @PostMapping("/bus/route/start")
     public ResponseEntity<Map<String, Boolean>> routeStart(@RequestBody RouteReport data) {
         System.out.print("[Start Drive] vehicleID: " + data.getVehicleID() +
@@ -124,14 +133,20 @@ public class BusController {
         if(data.isFlag()) {
             System.out.println(data.getCourseID());
             ds.setCurrentRoute(data.getRouteID());
+            ds.setCurrentRouteIndex(ds.getCurrentRouteIndex() + 1);
             ds.setVehicleId(data.getVehicleID());
             ds.setStatus(DailySchedules.Status.IN_SERVICE);
             ds.setRouteStatus(DailySchedules.RouteStatus.READY);
             dailyScheduleRepository.save(ds);
         }
         else{
+            int courseLength = courseRepository.findById(new CourseId(data.getOrgID(), data.getCourseID())).get().getRouteList().size();
 
-            // Todo: 이 루트가 마지막 노선인지 확인하고 마지막 이면 Terminate아니면 Ready로 변경
+            if(ds.getCurrentRouteIndex()+1 >= courseLength) {
+                ds.setStatus(DailySchedules.Status.COMPLETE);
+                dailyScheduleRepository.save(ds);
+                return ResponseEntity.ok(Map.of("ok", true));
+            }
             ds.setStatus(DailySchedules.Status.READY);
             ds.setCurrentStop(0);
             dailyScheduleRepository.save(ds);
@@ -141,8 +156,4 @@ public class BusController {
     }
 
 
-    private Object readJson(String path) throws IOException {
-        String content = Files.readString(Paths.get(path));
-        return mapper.readValue(content, Object.class);
-    }
 }

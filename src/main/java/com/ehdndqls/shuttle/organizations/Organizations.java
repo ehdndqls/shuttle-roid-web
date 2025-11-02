@@ -1,5 +1,6 @@
 package com.ehdndqls.shuttle.organizations;
 
+import com.ehdndqls.shuttle.schedule.DailySchedules;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,4 +21,10 @@ public class Organizations {
     private String organizationName;
     private String organizationPassword;
 
+    private String updateVersion;
+
+    @PrePersist
+    public void prePersist() {
+        if (updateVersion == null) { updateVersion = "2025110101"; }
+    }
 }

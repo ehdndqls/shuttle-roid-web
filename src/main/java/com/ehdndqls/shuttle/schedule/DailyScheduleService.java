@@ -229,7 +229,7 @@ public List<DailyScheduleForm> GetSchedule(Integer organizationId, boolean isHol
                 // 코스 상태 접근, 도착, 출발, 준비
                 if (course != null && course.getRouteList() != null && !course.getRouteList().isEmpty()) {
                     List<RouteDetail> routeDetails = course.getRouteList();
-                    int currentCourseRouteIndex = ds.getCurrentStopIndex(); // DailySchedules에 저장된 현재 경로 인덱스 가정
+                    int currentCourseRouteIndex = ds.getCurrentRouteIndex(); // DailySchedules에 저장된 현재 경로 인덱스 가정
 
                     // 현재 코스에 포함된 Route 조회
                     if (currentCourseRouteIndex >= 0 && currentCourseRouteIndex < routeDetails.size()) {
@@ -243,7 +243,7 @@ public List<DailyScheduleForm> GetSchedule(Integer organizationId, boolean isHol
                             List<StopDetail> stopList = route.getStopList();
 
                             // 정류소 인덱스 기반으로 이전/현재/다음 추출
-                            int currentStopIndex = ds.getCurrentStopIndexInRoute(); // 현재 정류장 인덱스 가정
+                            int currentStopIndex = ds.getCurrentStopIndex(); // 현재 정류장 인덱스 가정
                             if (stopList != null && !stopList.isEmpty()) {
                                 if (currentStopIndex >= 0 && currentStopIndex < stopList.size()) {
                                     form.setCurrentStop(stopList.get(currentStopIndex).getName());
