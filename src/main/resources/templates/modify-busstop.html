@@ -109,34 +109,38 @@
 
 
 <!-- 카카오맵 API 스크립트 -->
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f402d63377764b1c6f1d73d59e8dc5a2"></script>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=f402d63377764b1c6f1d73d59e8dc5a2&autoload=false"></script>
+
 <script>
-  var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-          mapOption = {
-            center: new kakao.maps.LatLng(36.772914, 126.933644), // 지도의 중심좌표
-            level: 3 // 지도의 확대 레벨
-          };
+  kakao.maps.load(function () {
+    // SDK가 완전히 로드된 후 실행됨
+    var mapContainer = document.getElementById('map'); // 지도를 표시할 div
+    var mapOption = {
+      center: new kakao.maps.LatLng(36.772914, 126.933644), // 지도 중심좌표 (순천향대)
+      level: 3 // 확대 레벨
+    };
 
-  var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+    // 지도 생성
+    var map = new kakao.maps.Map(mapContainer, mapOption);
 
-  // 마커 생성
-  var marker = new kakao.maps.Marker({
-    position: map.getCenter()
+    // 마커 생성 (초기 위치를 중심으로)
+    var marker = new kakao.maps.Marker({
+      position: map.getCenter()
+    });
+    marker.setMap(map);
+
+    // 위도/경도 입력 요소
+    var latInput = document.getElementById('latitude');
+    var lngInput = document.getElementById('longitude');
+
+    // 지도 클릭 이벤트 (마커 이동 + 좌표 입력)
+    kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+      var latlng = mouseEvent.latLng; // 클릭한 위치의 위도/경도
+      marker.setPosition(latlng); // 마커 위치 이동
+      if (latInput) latInput.value = latlng.getLat().toFixed(6);
+      if (lngInput) lngInput.value = latlng.getLng().toFixed(6);
+    });
   });
-  marker.setMap(map);
-
-  // input 요소
-  var latInput = document.getElementById('latitude');
-  var lngInput = document.getElementById('longitude');
-
-  // 클릭 시 마커 이동 + input 값 업데이트
-  kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-    var latlng = mouseEvent.latLng;
-    marker.setPosition(latlng);
-    latInput.value = latlng.getLat().toFixed(6);
-    lngInput.value = latlng.getLng().toFixed(6);
-  });
-
 </script>
 <script>
 
